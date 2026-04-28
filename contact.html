@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | Horizon Productions</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="background"></div>
+  <div class="noise"></div>
+
+  <header class="navbar">
+    <a href="index.html" class="logo">
+      <img src="Assets/Logo.png" alt="Horizon Productions Logo" />
+      <span>Horizon Productions</span>
+    </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="index.html#live">Live Ops</a>
+      <a href="index.html#games">Games</a>
+      <a href="index.html#team">Team</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <a href="contact.html" class="nav-button">
+      <img src="Assets/DiscordLogo.png" alt="Discord" />
+      Work With Us
+    </a>
+  </header>
+
+  <main>
+    <section class="contact-hero container reveal">
+      <div class="contact-info">
+        <p class="tag">INVESTMENT / ACQUISITION</p>
+        <h1>Let’s build the next major Roblox opportunity.</h1>
+        <p class="desc">
+          We are open to game acquisition, investment, publishing, and partnership conversations.
+        </p>
+
+        <div class="contact-points">
+          <div class="glow-card">
+            <h3>Game Acquisition</h3>
+            <p>Discuss ownership, transfers, or sale opportunities.</p>
+          </div>
+
+          <div class="glow-card">
+            <h3>Investment</h3>
+            <p>Support future Horizon Productions projects.</p>
+          </div>
+
+          <div class="glow-card">
+            <h3>Partnership</h3>
+            <p>Work with us on publishing, marketing, or scaling.</p>
+          </div>
+        </div>
+
+        <div class="direct-contact glow-card">
+          <h3>Direct Contact</h3>
+          <p><strong>Email:</strong> tbg.dev.alt@gmai.com</p>
+          <p><strong>Discord:</strong> @thellnan / @flxtraw</p>
+        </div>
+      </div>
+
+      <div class="form-card glow-card">
+        <h2>Contact Horizon</h2>
+        <p>Send us your inquiry.</p>
+
+        <form id="contactForm">
+          <input id="name" type="text" placeholder="Name / Company" required />
+          <input id="email" type="email" placeholder="Your Email" required />
+
+          <select id="reason" required>
+            <option value="">Select Inquiry Type</option>
+            <option value="Game Acquisition">Game Acquisition</option>
+            <option value="Investment">Investment</option>
+            <option value="Partnership">Partnership</option>
+            <option value="Publishing">Publishing</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <textarea id="message" placeholder="Tell us about your proposal..." required></textarea>
+
+          <button type="submit">Send Inquiry</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <p>© 2026 Horizon Productions. All rights reserved.</p>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
