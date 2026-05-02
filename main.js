@@ -24,7 +24,7 @@ document.addEventListener("mousemove", (event) => {
 });
 
 function setupGlowCards() {
-  document.querySelectorAll(".glow-card").forEach((card) => {
+  document.querySelectorAll(".card-glow").forEach((card) => {
     card.addEventListener("mousemove", (event) => {
       const rect = card.getBoundingClientRect();
       card.style.setProperty("--mx", `${event.clientX - rect.left}px`);
@@ -35,20 +35,16 @@ function setupGlowCards() {
 
 setupGlowCards();
 
-const revealElements = document.querySelectorAll(".reveal");
-
 const revealObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("active");
-      }
+      if (entry.isIntersecting) entry.target.classList.add("active");
     });
   },
   { threshold: 0.15 }
 );
 
-revealElements.forEach((element) => revealObserver.observe(element));
+document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
 
 function formatNumber(number) {
   if (!Number.isFinite(number)) return "0";
@@ -61,11 +57,7 @@ function formatNumber(number) {
 
 async function fetchJson(url) {
   const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(`Failed request: ${url}`);
-  }
-
+  if (!response.ok) throw new Error(`Failed request: ${url}`);
   return response.json();
 }
 
@@ -131,24 +123,26 @@ async function loadRobloxGames() {
       const thumbnail = thumbnails[info.id];
 
       const card = document.createElement("article");
-      card.className = "game-card glow-card";
+      card.className = "card-glow rounded-[1.8rem] border border-white/10 bg-white/[.07] p-5 backdrop-blur-xl";
 
       card.innerHTML = `
         ${
           thumbnail
-            ? `<img class="game-image" src="${thumbnail}" alt="${info.name} thumbnail">`
-            : `<div class="game-image">${info.name}</div>`
+            ? `<img class="h-56 w-full rounded-[1.4rem] object-cover" src="${thumbnail}" alt="${info.name} thumbnail">`
+            : `<div class="flex h-56 items-center justify-center rounded-[1.4rem] bg-gradient-to-r from-horizonOrange to-horizonPurple text-2xl font-black">${info.name}</div>`
         }
 
-        <h3>${info.name}</h3>
-        <p>${info.description || "A Horizon Productions Roblox experience."}</p>
+        <h3 class="mt-6 text-2xl font-black">${info.name}</h3>
+        <p class="mt-2 line-clamp-3 min-h-[72px] text-white/60">${info.description || "A Horizon Productions Roblox experience."}</p>
 
-        <div class="game-meta">
-          <span>${formatNumber(info.visits || 0)} visits</span>
-          <span>${formatNumber(info.playing || 0)} playing</span>
+        <div class="mt-5 flex flex-wrap gap-2">
+          <span class="rounded-full bg-white/10 px-3 py-2 text-sm font-black">${formatNumber(info.visits || 0)} visits</span>
+          <span class="rounded-full bg-white/10 px-3 py-2 text-sm font-black">${formatNumber(info.playing || 0)} playing</span>
         </div>
 
-        <button data-url="${originalGame?.url || "#"}">Play Game</button>
+        <button data-url="${originalGame?.url || "#"}" class="glow-button mt-5 rounded-full bg-gradient-to-r from-horizonOrange to-horizonPurple px-5 py-3 font-black">
+          Play Game
+        </button>
       `;
 
       gamesGrid.appendChild(card);
@@ -157,10 +151,8 @@ async function loadRobloxGames() {
     if (totalVisitsElement) totalVisitsElement.textContent = formatNumber(totalVisits);
     if (totalPlayingElement) totalPlayingElement.textContent = formatNumber(totalPlaying);
 
-    document.querySelectorAll(".game-card button").forEach((button) => {
-      button.addEventListener("click", () => {
-        window.open(button.dataset.url, "_blank");
-      });
+    document.querySelectorAll("[data-url]").forEach((button) => {
+      button.addEventListener("click", () => window.open(button.dataset.url, "_blank"));
     });
 
     setupGlowCards();
@@ -170,16 +162,21 @@ async function loadRobloxGames() {
     gamesGrid.innerHTML = games
       .map(
         (game) => `
-        <article class="game-card glow-card">
-          <div class="game-image">${game.fallbackName}</div>
-          <h3>${game.fallbackName}</h3>
-          <p>Roblox live data could not be loaded right now.</p>
-
-          <div class="game-meta">
-            <span>Stats unavailable</span>
+        <article class="card-glow rounded-[1.8rem] border border-white/10 bg-white/[.07] p-5 backdrop-blur-xl">
+          <div class="flex h-56 items-center justify-center rounded-[1.4rem] bg-gradient-to-r from-horizonOrange to-horizonPurple p-6 text-center text-2xl font-black">
+            ${game.fallbackName}
           </div>
 
-          <button data-url="${game.url}">Play Game</button>
+          <h3 class="mt-6 text-2xl font-black">${game.fallbackName}</h3>
+          <p class="mt-2 text-white/60">Roblox live data could not be loaded right now.</p>
+
+          <div class="mt-5 flex flex-wrap gap-2">
+            <span class="rounded-full bg-white/10 px-3 py-2 text-sm font-black">Stats unavailable</span>
+          </div>
+
+          <button data-url="${game.url}" class="glow-button mt-5 rounded-full bg-gradient-to-r from-horizonOrange to-horizonPurple px-5 py-3 font-black">
+            Play Game
+          </button>
         </article>
       `
       )
@@ -188,10 +185,8 @@ async function loadRobloxGames() {
     if (totalVisitsElement) totalVisitsElement.textContent = "Unavailable";
     if (totalPlayingElement) totalPlayingElement.textContent = "Unavailable";
 
-    document.querySelectorAll(".game-card button").forEach((button) => {
-      button.addEventListener("click", () => {
-        window.open(button.dataset.url, "_blank");
-      });
+    document.querySelectorAll("[data-url]").forEach((button) => {
+      button.addEventListener("click", () => window.open(button.dataset.url, "_blank"));
     });
 
     setupGlowCards();
