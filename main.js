@@ -1,15 +1,13 @@
 const root = document.documentElement;
 
+/* =========================
+   ROBLOX GAME CONFIG
+========================= */
 const games = [
   {
     placeId: "140472728510165",
     fallbackName: "Anime Ultra X",
     url: "https://www.roblox.com/games/140472728510165/Anime-Ultra-X"
-  },
-  {
-    placeId: "90719247686306",
-    fallbackName: "Swim For Brainrot",
-    url: "https://www.roblox.com/games/90719247686306/Swim-For-Brainrot"
   },
   {
     placeId: "89199115862748",
@@ -18,11 +16,17 @@ const games = [
   }
 ];
 
+/* =========================
+   BACKGROUND MOUSE EFFECT
+========================= */
 document.addEventListener("mousemove", (event) => {
   root.style.setProperty("--x", `${event.clientX}px`);
   root.style.setProperty("--y", `${event.clientY}px`);
 });
 
+/* =========================
+   GLOW EFFECT
+========================= */
 function setupGlowCards() {
   document.querySelectorAll(".card-glow").forEach((card) => {
     card.addEventListener("mousemove", (event) => {
@@ -35,17 +39,27 @@ function setupGlowCards() {
 
 setupGlowCards();
 
+/* =========================
+   REVEAL ANIMATION
+========================= */
 const revealObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) entry.target.classList.add("active");
+      if (entry.isIntersecting) {
+        entry.target.classList.add("active");
+      }
     });
   },
   { threshold: 0.15 }
 );
 
-document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
+document.querySelectorAll(".reveal").forEach((el) => {
+  revealObserver.observe(el);
+});
 
+/* =========================
+   NUMBER FORMATTER
+========================= */
 function formatNumber(number) {
   if (!Number.isFinite(number)) return "0";
 
@@ -55,12 +69,18 @@ function formatNumber(number) {
   }).format(number);
 }
 
+/* =========================
+   FETCH HELPER
+========================= */
 async function fetchJson(url) {
-  const response = await fetch(url);
-  if (!response.ok) throw new Error(`Failed request: ${url}`);
-  return response.json();
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("API failed");
+  return res.json();
 }
 
+/* =========================
+   GET UNIVERSE IDS
+========================= */
 async function getUniverseIds() {
   const results = [];
 
@@ -78,6 +98,9 @@ async function getUniverseIds() {
   return results;
 }
 
+/* =========================
+   LOAD ROBLOX DATA
+========================= */
 async function loadRobloxGames() {
   const gamesGrid = document.getElementById("gamesGrid");
   const totalVisitsElement = document.getElementById("totalVisits");
@@ -89,7 +112,7 @@ async function loadRobloxGames() {
     const gamesWithUniverses = await getUniverseIds();
 
     const universeIds = gamesWithUniverses
-      .map((game) => game.universeId)
+      .map((g) => g.universeId)
       .filter(Boolean)
       .join(",");
 
@@ -97,14 +120,13 @@ async function loadRobloxGames() {
       `https://games.roproxy.com/v1/games?universeIds=${universeIds}`
     );
 
-    const thumbnailInfo = await fetchJson(
-      `https://thumbnails.roproxy.com/v1/games/icons?universeIds=${universeIds}&size=512x512&format=Png&isCircular=false`
+    const thumbnails = await fetchJson(
+      `https://thumbnails.roproxy.com/v1/games/icons?universeIds=${universeIds}&size=512x512&format=Png`
     );
 
-    const thumbnails = {};
-
-    thumbnailInfo.data.forEach((thumbnail) => {
-      thumbnails[thumbnail.targetId] = thumbnail.imageUrl;
+    const thumbMap = {};
+    thumbnails.data.forEach((t) => {
+      thumbMap[t.targetId] = t.imageUrl;
     });
 
     let totalVisits = 0;
@@ -113,14 +135,14 @@ async function loadRobloxGames() {
     gamesGrid.innerHTML = "";
 
     gameInfo.data.forEach((info) => {
-      const originalGame = gamesWithUniverses.find(
-        (game) => String(game.universeId) === String(info.id)
+      const game = gamesWithUniverses.find(
+        (g) => String(g.universeId) === String(info.id)
       );
 
       totalVisits += info.visits || 0;
       totalPlaying += info.playing || 0;
 
-      const thumbnail = thumbnails[info.id];
+      const thumbnail = thumbMap[info.id];
 
       const card = document.createElement("article");
       card.className = "card-glow rounded-[1.8rem] border border-white/10 bg-white/[.07] p-5 backdrop-blur-xl";
@@ -128,19 +150,23 @@ async function loadRobloxGames() {
       card.innerHTML = `
         ${
           thumbnail
-            ? `<img class="h-56 w-full rounded-[1.4rem] object-cover" src="${thumbnail}" alt="${info.name} thumbnail">`
-            : `<div class="flex h-56 items-center justify-center rounded-[1.4rem] bg-gradient-to-r from-horizonOrange to-horizonPurple text-2xl font-black">${info.name}</div>`
+            ? `<img class="h-56 w-full rounded-[1.4rem] object-cover" src="${thumbnail}">`
+            : `<div class="flex h-56 items-center justify-center rounded-[1.4rem] bg-gradient-to-r from-orange-500 to-purple-600 text-2xl font-black">${info.name}</div>`
         }
 
         <h3 class="mt-6 text-2xl font-black">${info.name}</h3>
-        <p class="mt-2 line-clamp-3 min-h-[72px] text-white/60">${info.description || "A Horizon Productions Roblox experience."}</p>
+        <p class="mt-2 text-white/60">${info.description || "Roblox experience."}</p>
 
-        <div class="mt-5 flex flex-wrap gap-2">
-          <span class="rounded-full bg-white/10 px-3 py-2 text-sm font-black">${formatNumber(info.visits || 0)} visits</span>
-          <span class="rounded-full bg-white/10 px-3 py-2 text-sm font-black">${formatNumber(info.playing || 0)} playing</span>
+        <div class="mt-5 flex gap-2 flex-wrap">
+          <span class="bg-white/10 px-3 py-2 rounded-full text-sm font-black">
+            ${formatNumber(info.visits)} visits
+          </span>
+          <span class="bg-white/10 px-3 py-2 rounded-full text-sm font-black">
+            ${formatNumber(info.playing)} playing
+          </span>
         </div>
 
-        <button data-url="${originalGame?.url || "#"}" class="glow-button mt-5 rounded-full bg-gradient-to-r from-horizonOrange to-horizonPurple px-5 py-3 font-black">
+        <button data-url="${game?.url}" class="mt-5 px-5 py-3 rounded-full bg-gradient-to-r from-orange-500 to-purple-600 font-black">
           Play Game
         </button>
       `;
@@ -151,69 +177,49 @@ async function loadRobloxGames() {
     if (totalVisitsElement) totalVisitsElement.textContent = formatNumber(totalVisits);
     if (totalPlayingElement) totalPlayingElement.textContent = formatNumber(totalPlaying);
 
-    document.querySelectorAll("[data-url]").forEach((button) => {
-      button.addEventListener("click", () => window.open(button.dataset.url, "_blank"));
+    document.querySelectorAll("[data-url]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        window.open(btn.dataset.url, "_blank");
+      });
     });
 
     setupGlowCards();
-  } catch (error) {
-    console.warn("Roblox API failed:", error);
 
-    gamesGrid.innerHTML = games
-      .map(
-        (game) => `
-        <article class="card-glow rounded-[1.8rem] border border-white/10 bg-white/[.07] p-5 backdrop-blur-xl">
-          <div class="flex h-56 items-center justify-center rounded-[1.4rem] bg-gradient-to-r from-horizonOrange to-horizonPurple p-6 text-center text-2xl font-black">
-            ${game.fallbackName}
-          </div>
-
-          <h3 class="mt-6 text-2xl font-black">${game.fallbackName}</h3>
-          <p class="mt-2 text-white/60">Roblox live data could not be loaded right now.</p>
-
-          <div class="mt-5 flex flex-wrap gap-2">
-            <span class="rounded-full bg-white/10 px-3 py-2 text-sm font-black">Stats unavailable</span>
-          </div>
-
-          <button data-url="${game.url}" class="glow-button mt-5 rounded-full bg-gradient-to-r from-horizonOrange to-horizonPurple px-5 py-3 font-black">
-            Play Game
-          </button>
-        </article>
-      `
-      )
-      .join("");
-
-    if (totalVisitsElement) totalVisitsElement.textContent = "Unavailable";
-    if (totalPlayingElement) totalPlayingElement.textContent = "Unavailable";
-
-    document.querySelectorAll("[data-url]").forEach((button) => {
-      button.addEventListener("click", () => window.open(button.dataset.url, "_blank"));
-    });
-
-    setupGlowCards();
+  } catch (err) {
+    console.warn("Roblox API failed:", err);
   }
 }
 
+/* =========================
+   CONTACT FORM (FIXED)
+========================= */
 const contactForm = document.getElementById("contactForm");
 
 if (contactForm) {
   contactForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
     const reason = document.getElementById("reason").value;
-    const message = document.getElementById("message").value;
+    const message = document.getElementById("message").value.trim();
 
-    const subject = encodeURIComponent(`Horizon Productions Inquiry: ${reason}`);
+    const subject = encodeURIComponent(`Horizon Inquiry: ${reason}`);
+
     const body = encodeURIComponent(
-      `Name / Company: ${name}\n` +
-      `Email: ${email}\n` +
-      `Inquiry Type: ${reason}\n\n` +
-      `Message:\n${message}`
+      `Name: ${name}\nEmail: ${email}\nType: ${reason}\n\nMessage:\n${message}`
     );
 
-    window.location.href = `mailto:tbg.dev.alt@gmai.com?subject=${subject}&body=${body}`;
+    window.open(
+      `https://mail.google.com/mail/?view=cm&fs=1&to=tbg.dev.alt@gmail.com&su=${subject}&body=${body}`,
+      "_blank"
+    );
+
+    contactForm.reset();
   });
 }
 
+/* =========================
+   INIT
+========================= */
 loadRobloxGames();
