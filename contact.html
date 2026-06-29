@@ -18,10 +18,11 @@
           colors: {
             horizonOrange: "#ff8a1f",
             horizonPurple: "#8a2cff",
-            horizonBlack: "#050509"
+            horizonBlack: "#030307",
+            horizonBlue: "#46d9ff"
           },
           boxShadow: {
-            glow: "0 0 40px rgba(138,44,255,.35), 0 0 28px rgba(255,138,31,.22)"
+            glow: "0 0 60px rgba(138,44,255,.35), 0 0 34px rgba(255,138,31,.25)"
           }
         }
       }
@@ -34,70 +35,72 @@
 <body class="bg-horizonBlack text-white overflow-x-hidden">
   <div class="space-bg"></div>
   <div class="stars"></div>
+  <div class="grid-overlay"></div>
 
-  <header class="fixed top-5 left-1/2 z-50 w-[min(1180px,calc(100%-32px))] -translate-x-1/2 rounded-full border border-white/10 bg-black/55 px-5 py-3 backdrop-blur-xl shadow-2xl">
-    <div class="flex items-center justify-between gap-6">
-      <a href="index.html" class="flex items-center gap-3">
-        <img src="Assets/Logo.png" alt="Horizon Productions" class="h-11 w-11 object-contain" />
-        <span class="text-lg font-black tracking-tight bg-gradient-to-r from-horizonOrange to-horizonPurple bg-clip-text text-transparent">
-          Horizon Productions
-        </span>
-      </a>
+  <header class="nav-shell">
+    <a href="index.html" class="brand">
+      <img src="Assets/Logo.png" alt="Horizon Productions" />
+      <span>Horizon Productions</span>
+    </a>
 
-      <nav class="hidden items-center gap-7 text-sm font-bold text-white/70 md:flex">
-        <a href="index.html" class="hover:text-white">Home</a>
-        <a href="index.html#live" class="hover:text-white">Live Ops</a>
-        <a href="index.html#games" class="hover:text-white">Games</a>
-        <a href="index.html#team" class="hover:text-white">Team</a>
-      </nav>
+    <nav class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html#live">Live Ops</a>
+      <a href="index.html#games">Games</a>
+      <a href="index.html#team">Team</a>
+      <a href="index.html#contributors">Contributors</a>
+    </nav>
 
-      <a href="contact.html" class="glow-button hidden items-center gap-2 rounded-full bg-gradient-to-r from-horizonOrange to-horizonPurple px-5 py-3 text-sm font-black md:flex">
-        <img src="Assets/DiscordLogo.png" alt="Discord" class="h-5 w-5" />
-        Work With Us
-      </a>
-    </div>
+    <a href="contact.html" class="nav-cta">
+      <img src="Assets/DiscordLogo.png" alt="Discord" />
+      Work With Us
+    </a>
   </header>
 
   <main>
-    <section class="mx-auto grid min-h-screen w-[min(1180px,calc(100%-32px))] items-center gap-12 pt-40 md:grid-cols-[1fr_.85fr]">
+    <section class="contact-redesign">
       <div class="reveal">
-        <p class="mb-4 text-sm font-black uppercase tracking-[.25em] text-horizonOrange">Investment / Acquisition</p>
-        <h1 class="max-w-4xl text-5xl font-black leading-[.95] tracking-[-.06em] md:text-7xl">
+        <div class="eyebrow">Investment / Acquisition</div>
+
+        <h1 class="contact-title">
           Let’s build the next major Roblox opportunity.
         </h1>
-        <p class="mt-6 max-w-xl text-lg leading-8 text-white/65">
-          We are open to game acquisition, investment, publishing, and partnership conversations.
+
+        <p class="contact-copy">
+          Horizon Productions is open to game acquisition, investment, publishing,
+          and strategic partnership conversations.
         </p>
 
-        <div class="mt-9 grid gap-4 md:grid-cols-3">
-          <div class="mini-card">
-            <h3>Acquisition</h3>
-            <p>Discuss game sale, transfer, or ownership opportunities.</p>
+        <div class="contact-feature-grid">
+          <div class="contact-feature">
+            <h3>Game Acquisition</h3>
+            <p>Discuss ownership, transfers, valuation, or sale opportunities.</p>
           </div>
 
-          <div class="mini-card">
+          <div class="contact-feature">
             <h3>Investment</h3>
-            <p>Support the studio’s next projects and live operations.</p>
+            <p>Support future Roblox projects, live ops, and studio expansion.</p>
           </div>
 
-          <div class="mini-card">
-            <h3>Partnership</h3>
-            <p>Publishing, scaling, marketing, or long-term collaboration.</p>
+          <div class="contact-feature">
+            <h3>Publishing</h3>
+            <p>Collaborate with us on scaling, launch strategy, and growth.</p>
           </div>
         </div>
 
-        <div class="card-glow mt-6 rounded-[1.5rem] border border-white/10 bg-white/[.07] p-6 backdrop-blur-xl">
-          <h3 class="mb-3 text-xl font-black text-horizonOrange">Direct Contact</h3>
-          <p class="text-white/65"><strong class="text-white">Email:</strong> tbg.dev.alt@gmai.com</p>
-          <p class="mt-2 text-white/65"><strong class="text-white">Discord:</strong> @thellnan / @flxtraw</p>
+        <div class="direct-panel">
+          <h3>Direct Contact</h3>
+          <p><strong>Email:</strong> tbg.dev.alt@gmail.com</p>
+          <p><strong>Discord:</strong> @thellnan / @flxtraw</p>
         </div>
       </div>
 
-      <div class="reveal card-glow rounded-[2rem] border border-white/10 bg-white/[.07] p-8 shadow-glow backdrop-blur-xl">
-        <h2 class="text-3xl font-black">Contact Horizon</h2>
-        <p class="mt-2 text-white/60">Send us your inquiry.</p>
+      <div class="reveal contact-form-panel">
+        <div class="form-topline">Horizon Deal Desk</div>
+        <h2>Contact Horizon</h2>
+        <p>Send your inquiry through Gmail with the details pre-filled.</p>
 
-        <form id="contactForm" class="mt-7 grid gap-4">
+        <form id="contactForm">
           <input id="name" type="text" placeholder="Name / Company" required class="form-input" />
           <input id="email" type="email" placeholder="Your Email" required class="form-input" />
 
@@ -110,9 +113,9 @@
             <option value="Other">Other</option>
           </select>
 
-          <textarea id="message" placeholder="Tell us about your proposal..." required class="form-input min-h-[150px] resize-y"></textarea>
+          <textarea id="message" placeholder="Tell us about your proposal..." required class="form-input min-h-[160px] resize-y"></textarea>
 
-          <button type="submit" class="glow-button rounded-full bg-gradient-to-r from-horizonOrange to-horizonPurple px-7 py-4 font-black">
+          <button type="submit" class="primary-button w-full">
             Send Inquiry
           </button>
         </form>
@@ -120,7 +123,7 @@
     </section>
   </main>
 
-  <footer class="mx-auto w-[min(1180px,calc(100%-32px))] border-t border-white/10 py-8 text-center text-white/50">
+  <footer class="site-footer">
     <p>© 2026 Horizon Productions. All rights reserved.</p>
   </footer>
 
