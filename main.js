@@ -418,3 +418,118 @@ contactForm?.addEventListener("submit", (event) => {
     window.location.href = `mailto:tbg.dev.alt@gmail.com?subject=${subject}&body=${body}`;
   }
 });
+
+/* ---------------------------
+   INTERACTIVE STAR BACKGROUND
+   Powered by tsParticles slim bundle.
+---------------------------- */
+
+async function initInteractiveBackground() {
+  const target = document.getElementById("tsparticles");
+
+  if (!target || !window.tsParticles || typeof window.loadSlim !== "function") {
+    return;
+  }
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const compact = window.matchMedia("(max-width: 760px)").matches;
+
+  try {
+    await window.loadSlim(window.tsParticles);
+
+    await window.tsParticles.load({
+      id: "tsparticles",
+      options: {
+        fullScreen: {
+          enable: false
+        },
+        fpsLimit: reducedMotion ? 24 : 50,
+        detectRetina: true,
+        pauseOnBlur: true,
+        background: {
+          color: "transparent"
+        },
+        interactivity: {
+          detectsOn: "window",
+          events: {
+            onHover: {
+              enable: !reducedMotion,
+              mode: "grab"
+            },
+            onClick: {
+              enable: !reducedMotion,
+              mode: "push"
+            },
+            resize: true
+          },
+          modes: {
+            grab: {
+              distance: compact ? 95 : 145,
+              links: {
+                opacity: 0.22,
+                color: "#c793ff"
+              }
+            },
+            push: {
+              quantity: 2
+            }
+          }
+        },
+        particles: {
+          color: {
+            value: ["#ffffff", "#ffc071", "#b77cff"]
+          },
+          links: {
+            enable: true,
+            distance: compact ? 88 : 120,
+            color: "#9d70d7",
+            opacity: 0.055,
+            width: 1
+          },
+          move: {
+            enable: !reducedMotion,
+            direction: "none",
+            random: true,
+            speed: compact ? 0.18 : 0.24,
+            straight: false,
+            outModes: {
+              default: "out"
+            }
+          },
+          number: {
+            value: reducedMotion ? 28 : compact ? 42 : 68,
+            density: {
+              enable: true,
+              width: 1500,
+              height: 900
+            }
+          },
+          opacity: {
+            value: {
+              min: 0.18,
+              max: 0.68
+            },
+            animation: {
+              enable: !reducedMotion,
+              speed: 0.4,
+              sync: false
+            }
+          },
+          shape: {
+            type: "circle"
+          },
+          size: {
+            value: {
+              min: 0.65,
+              max: 1.7
+            }
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.warn("Interactive star field could not be initialized:", error);
+  }
+}
+
+initInteractiveBackground();

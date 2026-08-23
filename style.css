@@ -1713,3 +1713,152 @@ button, a { -webkit-tap-highlight-color: transparent; }
     scroll-behavior: auto !important;
   }
 }
+
+/* =========================================================
+   2026 INTERACTIVE SPACE LAYER + THREE.JS PLANET
+========================================================= */
+
+#tsparticles {
+  z-index: -1;
+  opacity: .72;
+}
+
+#tsparticles canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Keep the static star texture as depth behind the interactive field. */
+.stars-a { opacity: .34; }
+.stars-b { opacity: .18; }
+
+.orbit-stage {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  cursor: crosshair;
+}
+
+.orbit-stage::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(178,118,255,.13), rgba(255,139,74,.035) 42%, transparent 72%);
+  transform: translate(-50%, -50%);
+  filter: blur(7px);
+  pointer-events: none;
+}
+
+.orbit-stage::after {
+  content: "";
+  position: absolute;
+  inset: 11% 12%;
+  border: 1px solid rgba(255,255,255,.04);
+  border-radius: 50%;
+  transform: rotate(-12deg) scaleY(.42);
+  pointer-events: none;
+}
+
+.planet-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  touch-action: pan-y;
+}
+
+.planet-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  filter: saturate(1.06) contrast(1.04);
+}
+
+.planet-fallback {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: 210px;
+  height: 210px;
+  transform: translate(-50%, -50%);
+  transition: opacity .35s ease;
+}
+
+.planet-canvas.ready + .planet-fallback {
+  opacity: 0;
+}
+
+.planet-fallback-core {
+  position: absolute;
+  inset: 17px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 24%, rgba(255,255,255,.3), transparent 8%),
+    radial-gradient(circle at 39% 34%, #b57aff, #6a38b1 43%, #1c102d 78%);
+  box-shadow: inset -42px -34px 60px rgba(0,0,0,.55), 0 0 70px rgba(178,118,255,.24);
+}
+
+.planet-fallback-ring {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 2px solid rgba(255,165,95,.58);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) rotate(-15deg);
+}
+
+.fallback-ring-one { width: 310px; height: 86px; }
+.fallback-ring-two {
+  width: 275px;
+  height: 58px;
+  border-color: rgba(190,128,255,.55);
+  transform: translate(-50%, -50%) rotate(17deg);
+}
+
+.planet-hint {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: 15px;
+  padding: 7px 10px;
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 999px;
+  transform: translateX(-50%);
+  background: rgba(7,6,11,.5);
+  color: rgba(255,255,255,.34);
+  font-size: .61rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+
+.orbit-stage:hover .planet-hint { opacity: .78; }
+
+@media (max-width: 760px) {
+  .orbit-stage {
+    height: 340px;
+  }
+
+  .planet-fallback {
+    width: 172px;
+    height: 172px;
+  }
+
+  .fallback-ring-one { width: 252px; height: 70px; }
+  .fallback-ring-two { width: 224px; height: 48px; }
+
+  .planet-hint {
+    display: none;
+  }
+}

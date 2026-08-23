@@ -14,6 +14,7 @@
 
 <body>
   <div class="site-bg" aria-hidden="true">
+    <div id="tsparticles"></div>
     <div class="aurora aurora-orange"></div>
     <div class="aurora aurora-purple"></div>
     <div class="stars stars-a"></div>
@@ -113,17 +114,18 @@
       <div class="hero-orbit reveal" aria-hidden="true">
         <div class="orbit-card">
           <div class="orbit-card-top">
-            <span>HZN / STUDIO</span>
+            <span>HRZN / STUDIO</span>
             <span class="status-pill"><i></i> ACTIVE</span>
           </div>
 
-          <div class="orbit-stage">
-            <div class="planet">
-              <div class="planet-glow"></div>
-              <div class="planet-surface"></div>
-              <div class="planet-ring ring-one"></div>
-              <div class="planet-ring ring-two"></div>
+          <div class="orbit-stage" id="planetStage">
+            <div id="planetCanvas" class="planet-canvas" aria-label="Interactive animated HRZN planet"></div>
+            <div class="planet-fallback" aria-hidden="true">
+              <div class="planet-fallback-core"></div>
+              <div class="planet-fallback-ring fallback-ring-one"></div>
+              <div class="planet-fallback-ring fallback-ring-two"></div>
             </div>
+            <div class="planet-hint">Move your cursor to orbit</div>
           </div>
 
           <div class="orbit-card-bottom">
@@ -293,7 +295,7 @@
       <div class="hub-visual" aria-hidden="true">
         <div class="hub-ring hub-ring-a"></div>
         <div class="hub-ring hub-ring-b"></div>
-        <div class="hub-core">HZN</div>
+        <div class="hub-core">HRZN</div>
       </div>
 
       <div class="hub-copy">
@@ -325,6 +327,9 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@tsparticles/engine@4/tsparticles.engine.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tsparticles/slim@4/tsparticles.slim.bundle.min.js"></script>
+  <script type="module" src="planet.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
