@@ -1,225 +1,420 @@
-const root = document.documentElement;
+"use strict";
 
-/* =========================
-   ROBLOX GAME CONFIG
-========================= */
-const games = [
+const HUB_INVITE = "https://discord.gg/XdaetbyZF7";
+
+/*
+  JOBS ARE CURRENTLY FRONT-END DATA.
+  When the Discord bot/API is added later, replace this array with a fetch()
+  to a trusted backend endpoint. Do NOT expose a Discord bot token in browser JS.
+*/
+const JOBS = [
   {
-    placeId: "140472728510165",
-    fallbackName: "Anime Ultra X",
-    url: "https://www.roblox.com/games/140472728510165/Anime-Ultra-X"
+    id: "game-designer",
+    title: "Game Designer",
+    department: "Design",
+    type: "Project-based",
+    location: "Remote",
+    summary: "Design progression, systems, loops, and player-facing content for upcoming Roblox projects.",
+    requirements: ["Roblox design experience", "Strong written documentation", "Comfort working with engineers and artists"],
+    featured: true
   },
   {
-    placeId: "89199115862748",
-    fallbackName: "Launch Rocket for Brainrots",
-    url: "https://www.roblox.com/games/89199115862748/Launch-Rocket-for-Brainrots"
+    id: "roblox-engineer",
+    title: "Roblox Engineer",
+    department: "Engineering",
+    type: "Project-based",
+    location: "Remote",
+    summary: "Build reliable gameplay systems, tools, interfaces, and production-ready Roblox infrastructure.",
+    requirements: ["Strong Luau fundamentals", "Experience shipping Roblox systems", "Clean collaboration and debugging habits"],
+    featured: true
+  },
+  {
+    id: "vfx-artist",
+    title: "VFX Artist",
+    department: "Art",
+    type: "Project-based",
+    location: "Remote",
+    summary: "Create readable, performant combat and environmental VFX that support the visual identity of each project.",
+    requirements: ["Roblox VFX portfolio", "Strong timing and readability", "Performance awareness"],
+    featured: true
+  },
+  {
+    id: "animator",
+    title: "Animator",
+    department: "Animation",
+    type: "Project-based",
+    location: "Remote",
+    summary: "Produce character, combat, and gameplay animation with strong posing, timing, and implementation awareness.",
+    requirements: ["Roblox animation portfolio", "Strong action timing", "Ability to work from references and direction"]
+  },
+  {
+    id: "modeler",
+    title: "3D Modeler",
+    department: "3D",
+    type: "Project-based",
+    location: "Remote",
+    summary: "Create optimized props, environments, and gameplay assets that fit established project art direction.",
+    requirements: ["Strong 3D portfolio", "Optimization knowledge", "Consistent style matching"]
+  },
+  {
+    id: "ui-artist",
+    title: "UI Artist",
+    department: "UI/UX",
+    type: "Project-based",
+    location: "Remote",
+    summary: "Design polished interfaces with strong hierarchy, game readability, and a premium visual finish.",
+    requirements: ["UI portfolio", "Strong hierarchy and composition", "Roblox implementation awareness"]
   }
 ];
 
-/* =========================
-   BACKGROUND MOUSE EFFECT
-========================= */
-document.addEventListener("mousemove", (event) => {
-  root.style.setProperty("--x", `${event.clientX}px`);
-  root.style.setProperty("--y", `${event.clientY}px`);
+/* ---------------------------
+   MOBILE NAVIGATION
+---------------------------- */
+
+const menuButton = document.getElementById("menuButton");
+const menuClose = document.getElementById("menuClose");
+const mobileMenu = document.getElementById("mobileMenu");
+
+function setMenu(open) {
+  if (!mobileMenu || !menuButton) return;
+
+  mobileMenu.classList.toggle("open", open);
+  mobileMenu.setAttribute("aria-hidden", String(!open));
+  menuButton.setAttribute("aria-expanded", String(open));
+  document.body.classList.toggle("menu-open", open);
+}
+
+menuButton?.addEventListener("click", () => {
+  setMenu(!mobileMenu?.classList.contains("open"));
 });
 
-/* =========================
-   GLOW EFFECT
-========================= */
-function setupGlowCards() {
-  document.querySelectorAll(".card-glow").forEach((card) => {
-    card.addEventListener("mousemove", (event) => {
-      const rect = card.getBoundingClientRect();
-      card.style.setProperty("--mx", `${event.clientX - rect.left}px`);
-      card.style.setProperty("--my", `${event.clientY - rect.top}px`);
+menuClose?.addEventListener("click", () => setMenu(false));
+
+mobileMenu?.addEventListener("click", (event) => {
+  if (event.target === mobileMenu) setMenu(false);
+});
+
+mobileMenu?.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", () => setMenu(false));
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    setMenu(false);
+    closeJobModal();
+  }
+});
+
+/* ---------------------------
+   REVEAL
+---------------------------- */
+
+const revealElements = document.querySelectorAll(".reveal");
+
+if ("IntersectionObserver" in window) {
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("active");
+        obs.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.1, rootMargin: "0px 0px -30px" }
+  );
+
+  revealElements.forEach((element) => observer.observe(element));
+} else {
+  revealElements.forEach((element) => element.classList.add("active"));
+}
+
+/* ---------------------------
+   HELPERS
+---------------------------- */
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function setFeedback(element, message, type = "") {
+  if (!element) return;
+
+  element.textContent = message;
+  element.className = `form-feedback visible ${type}`.trim();
+}
+
+/* ---------------------------
+   HOME FEATURED JOBS
+---------------------------- */
+
+const featuredJobs = document.getElementById("featuredJobs");
+
+if (featuredJobs) {
+  const featured = JOBS.filter((job) => job.featured).slice(0, 3);
+
+  featuredJobs.innerHTML = featured.map((job) => `
+    <article class="job-preview">
+      <div>
+        <h3>${escapeHtml(job.title)}</h3>
+        <p>${escapeHtml(job.department)} · ${escapeHtml(job.location)}</p>
+      </div>
+      <span class="job-pill">${escapeHtml(job.type)}</span>
+      <a href="jobs.html?role=${encodeURIComponent(job.id)}">View role ↗</a>
+    </article>
+  `).join("");
+}
+
+/* ---------------------------
+   JOB LIST
+---------------------------- */
+
+const jobsGrid = document.getElementById("jobsGrid");
+const jobFilters = document.getElementById("jobFilters");
+const jobCount = document.getElementById("jobCount");
+const emptyJobs = document.getElementById("emptyJobs");
+
+let activeDepartment = "All";
+
+function renderJobFilters() {
+  if (!jobFilters) return;
+
+  const departments = ["All", ...new Set(JOBS.map((job) => job.department))];
+
+  jobFilters.innerHTML = departments.map((department) => `
+    <button
+      type="button"
+      class="filter-button ${department === activeDepartment ? "active" : ""}"
+      data-filter="${escapeHtml(department)}"
+    >
+      ${escapeHtml(department)}
+    </button>
+  `).join("");
+
+  jobFilters.querySelectorAll("[data-filter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      activeDepartment = button.dataset.filter || "All";
+      renderJobFilters();
+      renderJobs();
     });
   });
 }
 
-setupGlowCards();
+function renderJobs() {
+  if (!jobsGrid) return;
 
-/* =========================
-   REVEAL ANIMATION
-========================= */
-const revealObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("active");
-      }
-    });
-  },
-  { threshold: 0.15 }
-);
+  const filtered = activeDepartment === "All"
+    ? JOBS
+    : JOBS.filter((job) => job.department === activeDepartment);
 
-document.querySelectorAll(".reveal").forEach((el) => {
-  revealObserver.observe(el);
-});
-
-/* =========================
-   NUMBER FORMATTER
-========================= */
-function formatNumber(number) {
-  if (!Number.isFinite(number)) return "0";
-
-  return new Intl.NumberFormat("en-US", {
-    notation: number >= 1000000 ? "compact" : "standard",
-    maximumFractionDigits: 1
-  }).format(number);
-}
-
-/* =========================
-   FETCH HELPER
-========================= */
-async function fetchJson(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("API failed");
-  return res.json();
-}
-
-/* =========================
-   GET UNIVERSE IDS
-========================= */
-async function getUniverseIds() {
-  const results = [];
-
-  for (const game of games) {
-    const data = await fetchJson(
-      `https://apis.roproxy.com/universes/v1/places/${game.placeId}/universe`
-    );
-
-    results.push({
-      ...game,
-      universeId: data.universeId
-    });
+  if (jobCount) {
+    jobCount.textContent = `${filtered.length} open ${filtered.length === 1 ? "role" : "roles"}`;
   }
 
-  return results;
-}
+  if (emptyJobs) {
+    emptyJobs.hidden = filtered.length !== 0;
+  }
 
-/* =========================
-   LOAD ROBLOX DATA
-========================= */
-async function loadRobloxGames() {
-  const gamesGrid = document.getElementById("gamesGrid");
-  const totalVisitsElement = document.getElementById("totalVisits");
-  const totalPlayingElement = document.getElementById("totalPlaying");
+  jobsGrid.innerHTML = filtered.map((job) => `
+    <article class="job-card reveal active">
+      <div class="job-card-top">
+        <div>
+          <span class="department">${escapeHtml(job.department)}</span>
+          <h3>${escapeHtml(job.title)}</h3>
+        </div>
+        <span class="job-pill">${escapeHtml(job.type)}</span>
+      </div>
 
-  if (!gamesGrid) return;
+      <p>${escapeHtml(job.summary)}</p>
 
-  try {
-    const gamesWithUniverses = await getUniverseIds();
-
-    const universeIds = gamesWithUniverses
-      .map((g) => g.universeId)
-      .filter(Boolean)
-      .join(",");
-
-    const gameInfo = await fetchJson(
-      `https://games.roproxy.com/v1/games?universeIds=${universeIds}`
-    );
-
-    const thumbnails = await fetchJson(
-      `https://thumbnails.roproxy.com/v1/games/icons?universeIds=${universeIds}&size=512x512&format=Png`
-    );
-
-    const thumbMap = {};
-    thumbnails.data.forEach((t) => {
-      thumbMap[t.targetId] = t.imageUrl;
-    });
-
-    let totalVisits = 0;
-    let totalPlaying = 0;
-
-    gamesGrid.innerHTML = "";
-
-    gameInfo.data.forEach((info) => {
-      const game = gamesWithUniverses.find(
-        (g) => String(g.universeId) === String(info.id)
-      );
-
-      totalVisits += info.visits || 0;
-      totalPlaying += info.playing || 0;
-
-      const thumbnail = thumbMap[info.id];
-
-      const card = document.createElement("article");
-      card.className = "card-glow rounded-[1.8rem] border border-white/10 bg-white/[.07] p-5 backdrop-blur-xl";
-
-      card.innerHTML = `
-        ${
-          thumbnail
-            ? `<img class="h-56 w-full rounded-[1.4rem] object-cover" src="${thumbnail}">`
-            : `<div class="flex h-56 items-center justify-center rounded-[1.4rem] bg-gradient-to-r from-orange-500 to-purple-600 text-2xl font-black">${info.name}</div>`
-        }
-
-        <h3 class="mt-6 text-2xl font-black">${info.name}</h3>
-        <p class="mt-2 text-white/60">${info.description || "Roblox experience."}</p>
-
-        <div class="mt-5 flex gap-2 flex-wrap">
-          <span class="bg-white/10 px-3 py-2 rounded-full text-sm font-black">
-            ${formatNumber(info.visits)} visits
-          </span>
-          <span class="bg-white/10 px-3 py-2 rounded-full text-sm font-black">
-            ${formatNumber(info.playing)} playing
-          </span>
+      <div class="job-card-footer">
+        <div class="job-meta">
+          <span class="job-pill">${escapeHtml(job.location)}</span>
+          ${job.featured ? `<span class="job-pill">Priority</span>` : ""}
         </div>
 
-        <button data-url="${game?.url}" class="mt-5 px-5 py-3 rounded-full bg-gradient-to-r from-orange-500 to-purple-600 font-black">
-          Play Game
+        <button class="apply-button" type="button" data-apply="${escapeHtml(job.id)}">
+          Apply ↗
         </button>
-      `;
+      </div>
+    </article>
+  `).join("");
 
-      gamesGrid.appendChild(card);
-    });
-
-    if (totalVisitsElement) totalVisitsElement.textContent = formatNumber(totalVisits);
-    if (totalPlayingElement) totalPlayingElement.textContent = formatNumber(totalPlaying);
-
-    document.querySelectorAll("[data-url]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        window.open(btn.dataset.url, "_blank");
-      });
-    });
-
-    setupGlowCards();
-
-  } catch (err) {
-    console.warn("Roblox API failed:", err);
-  }
-}
-
-/* =========================
-   CONTACT FORM (FIXED)
-========================= */
-const contactForm = document.getElementById("contactForm");
-
-if (contactForm) {
-  contactForm.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const reason = document.getElementById("reason").value;
-    const message = document.getElementById("message").value.trim();
-
-    const subject = encodeURIComponent(`Horizon Inquiry: ${reason}`);
-
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\nType: ${reason}\n\nMessage:\n${message}`
-    );
-
-    window.open(
-      `https://mail.google.com/mail/?view=cm&fs=1&to=tbg.dev.alt@gmail.com&su=${subject}&body=${body}`,
-      "_blank"
-    );
-
-    contactForm.reset();
+  jobsGrid.querySelectorAll("[data-apply]").forEach((button) => {
+    button.addEventListener("click", () => openJobModal(button.dataset.apply));
   });
 }
 
-/* =========================
-   INIT
-========================= */
-loadRobloxGames();
+renderJobFilters();
+renderJobs();
+
+/* ---------------------------
+   JOB APPLICATION MODAL
+---------------------------- */
+
+const jobModal = document.getElementById("jobModal");
+const hubConfirmed = document.getElementById("hubConfirmed");
+const applicationForm = document.getElementById("jobApplicationForm");
+const applicationFeedback = document.getElementById("applicationFeedback");
+
+function openJobModal(jobId) {
+  if (!jobModal) return;
+
+  const job = JOBS.find((item) => item.id === jobId);
+  if (!job) return;
+
+  const title = document.getElementById("applicationTitle");
+  const department = document.getElementById("applicationDepartment");
+  const type = document.getElementById("applicationType");
+  const intro = document.getElementById("applicationIntro");
+  const roleInput = document.getElementById("jobRole");
+
+  if (title) title.textContent = `Apply — ${job.title}`;
+  if (department) department.textContent = job.department;
+  if (type) type.textContent = `${job.type} · ${job.location}`;
+  if (intro) intro.textContent = job.summary;
+  if (roleInput) roleInput.value = job.title;
+
+  if (hubConfirmed) hubConfirmed.checked = false;
+  if (applicationForm) applicationForm.hidden = true;
+  if (applicationFeedback) applicationFeedback.className = "form-feedback";
+
+  jobModal.classList.add("open");
+  jobModal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("modal-open");
+}
+
+function closeJobModal() {
+  if (!jobModal?.classList.contains("open")) return;
+
+  jobModal.classList.remove("open");
+  jobModal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("modal-open");
+}
+
+jobModal?.querySelectorAll("[data-close-modal]").forEach((element) => {
+  element.addEventListener("click", closeJobModal);
+});
+
+hubConfirmed?.addEventListener("change", () => {
+  if (!applicationForm) return;
+  applicationForm.hidden = !hubConfirmed.checked;
+});
+
+applicationForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (!hubConfirmed?.checked) {
+    setFeedback(applicationFeedback, "Join Horizon Hub and confirm membership before applying.", "error");
+    return;
+  }
+
+  const role = document.getElementById("jobRole")?.value.trim() || "";
+  const discord = document.getElementById("appDiscord")?.value.trim() || "";
+  const roblox = document.getElementById("appRoblox")?.value.trim() || "";
+  const portfolio = document.getElementById("appPortfolio")?.value.trim() || "";
+  const experience = document.getElementById("appExperience")?.value.trim() || "";
+  const why = document.getElementById("appWhy")?.value.trim() || "";
+  const availability = document.getElementById("appAvailability")?.value.trim() || "";
+
+  if (!role || !discord || !roblox || !portfolio || !experience || !why || !availability) {
+    setFeedback(applicationFeedback, "Complete every field before preparing your application.", "error");
+    return;
+  }
+
+  const application = [
+    "HORIZON PRODUCTIONS — JOB APPLICATION",
+    "",
+    `Role: ${role}`,
+    `Discord: ${discord}`,
+    `Roblox: ${roblox}`,
+    `Portfolio: ${portfolio}`,
+    `Availability: ${availability}`,
+    "",
+    "RELEVANT EXPERIENCE",
+    experience,
+    "",
+    "WHY HORIZON",
+    why
+  ].join("\n");
+
+  try {
+    await navigator.clipboard.writeText(application);
+    setFeedback(
+      applicationFeedback,
+      "Application copied. Open Horizon Hub and paste it into the recruitment flow. Automated tickets will be added later.",
+      "success"
+    );
+  } catch {
+    setFeedback(
+      applicationFeedback,
+      "Your browser blocked clipboard access. Copy the application manually from the fields, then continue in Horizon Hub.",
+      "error"
+    );
+  }
+
+  setTimeout(() => {
+    window.open(HUB_INVITE, "_blank", "noopener,noreferrer");
+  }, 450);
+});
+
+/* Auto-open role from ?role= */
+if (jobsGrid) {
+  const params = new URLSearchParams(window.location.search);
+  const role = params.get("role");
+
+  if (role && JOBS.some((job) => job.id === role)) {
+    setTimeout(() => openJobModal(role), 350);
+  }
+}
+
+/* ---------------------------
+   BUSINESS CONTACT FORM
+---------------------------- */
+
+const contactForm = document.getElementById("contactForm");
+const contactFeedback = document.getElementById("contactFeedback");
+
+contactForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const name = document.getElementById("contactName")?.value.trim() || "";
+  const email = document.getElementById("contactEmail")?.value.trim() || "";
+  const reason = document.getElementById("contactReason")?.value || "";
+  const message = document.getElementById("contactMessage")?.value.trim() || "";
+
+  if (name.length < 2 || !email || !reason || message.length < 10) {
+    setFeedback(contactFeedback, "Complete all fields before preparing your email.", "error");
+    return;
+  }
+
+  const subject = encodeURIComponent(`Horizon Productions — ${reason}`);
+  const body = encodeURIComponent([
+    "HORIZON PRODUCTIONS — BUSINESS INQUIRY",
+    "",
+    `Name / Company: ${name}`,
+    `Reply Email: ${email}`,
+    `Inquiry Type: ${reason}`,
+    "",
+    "MESSAGE",
+    message
+  ].join("\n"));
+
+  const gmailUrl =
+    `https://mail.google.com/mail/?view=cm&fs=1` +
+    `&to=tbg.dev.alt@gmail.com` +
+    `&su=${subject}` +
+    `&body=${body}`;
+
+  setFeedback(contactFeedback, "Opening Gmail with your inquiry prepared.", "success");
+
+  const popup = window.open(gmailUrl, "_blank", "noopener,noreferrer");
+
+  if (!popup) {
+    window.location.href = `mailto:tbg.dev.alt@gmail.com?subject=${subject}&body=${body}`;
+  }
+});

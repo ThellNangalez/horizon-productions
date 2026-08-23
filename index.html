@@ -1,295 +1,328 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#08060d" />
+  <meta name="description" content="Horizon Productions is a Roblox development studio focused on ambitious experiences, production systems, and long-term creative partnerships." />
   <title>Horizon Productions</title>
 
   <link rel="icon" type="image/png" href="Assets/favicon.png" />
   <link rel="apple-touch-icon" href="Assets/favicon.png" />
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            horizonOrange: "#ff8a1f",
-            horizonPurple: "#8a2cff",
-            horizonBlack: "#030307",
-            horizonBlue: "#46d9ff"
-          },
-          boxShadow: {
-            glow: "0 0 60px rgba(138,44,255,.35), 0 0 34px rgba(255,138,31,.25)"
-          }
-        }
-      }
-    };
-  </script>
-
   <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="bg-horizonBlack text-white overflow-x-hidden">
-  <div class="space-bg"></div>
-  <div class="stars"></div>
-  <div class="grid-overlay"></div>
+<body>
+  <div class="site-bg" aria-hidden="true">
+    <div class="aurora aurora-orange"></div>
+    <div class="aurora aurora-purple"></div>
+    <div class="stars stars-a"></div>
+    <div class="stars stars-b"></div>
+    <div class="grid-fade"></div>
+  </div>
 
-  <header class="nav-shell">
-    <a href="index.html" class="brand">
-      <img src="Assets/Logo.png" alt="Horizon Productions" />
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="Horizon Productions home">
+      <img src="Assets/Logo.png" alt="" />
       <span>Horizon Productions</span>
     </a>
 
-    <nav class="nav-links">
-      <a href="#home">Home</a>
-      <a href="#live">Live Ops</a>
-      <a href="#games">Games</a>
-      <a href="#team">Team</a>
-      <a href="#contributors">Contributors</a>
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <a class="active" href="index.html">Studio</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="#leadership">Leadership</a>
       <a href="contact.html">Contact</a>
     </nav>
 
-    <a href="contact.html" class="nav-cta">
-      <img src="Assets/DiscordLogo.png" alt="Discord" />
-      Work With Us
-    </a>
+    <div class="header-actions">
+      <a class="hub-link desktop-only" href="https://discord.gg/XdaetbyZF7" target="_blank" rel="noopener noreferrer">
+        Horizon Hub
+        <span aria-hidden="true">↗</span>
+      </a>
+
+      <button class="menu-button" id="menuButton" type="button" aria-label="Open menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </header>
 
+  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+    <div class="mobile-menu-inner">
+      <div class="mobile-menu-top">
+        <span>Navigate</span>
+        <button id="menuClose" type="button" aria-label="Close menu">×</button>
+      </div>
+
+      <nav>
+        <a href="index.html">Studio</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="#leadership">Leadership</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <a class="button button-primary mobile-hub" href="https://discord.gg/XdaetbyZF7" target="_blank" rel="noopener noreferrer">
+        Join Horizon Hub
+      </a>
+    </div>
+  </div>
+
   <main>
-    <section id="home" class="hero-section">
-      <div class="reveal">
-        <div class="eyebrow">Roblox Development Studio</div>
-        <h1 class="hero-title">Building Roblox worlds beyond the horizon.</h1>
-        <p class="hero-copy">
-          Horizon Productions creates polished, scalable, community-first Roblox experiences with cinematic style, strong systems, and long-term live ops.
+    <section class="hero shell">
+      <div class="hero-copy reveal">
+        <div class="eyebrow">
+          <span class="eyebrow-line"></span>
+          Independent Roblox Studio
+        </div>
+
+        <h1>
+          We build worlds
+          <span class="gradient-text">worth staying in.</span>
+        </h1>
+
+        <p class="hero-description">
+          Horizon Productions is a Roblox studio built around focused teams, strong creative direction, and experiences designed to grow beyond launch day.
         </p>
 
         <div class="hero-actions">
-          <a href="#games" class="primary-button">Explore Games</a>
-          <a href="contact.html" class="secondary-button">Partner With Us</a>
+          <a class="button button-primary" href="jobs.html">
+            View Open Roles
+            <span aria-hidden="true">↗</span>
+          </a>
+
+          <a class="button button-ghost" href="https://discord.gg/XdaetbyZF7" target="_blank" rel="noopener noreferrer">
+            Join Horizon Hub
+          </a>
+        </div>
+
+        <div class="hero-meta" aria-label="Studio highlights">
+          <div>
+            <strong>Roblox</strong>
+            <span>Primary platform</span>
+          </div>
+          <div>
+            <strong>Remote</strong>
+            <span>Distributed production</span>
+          </div>
+          <div>
+            <strong>Growing</strong>
+            <span>Hiring selectively</span>
+          </div>
         </div>
       </div>
 
-      <div class="reveal command-card">
-        <div class="orb orb-a"></div>
-        <div class="orb orb-b"></div>
+      <div class="hero-orbit reveal" aria-hidden="true">
+        <div class="orbit-card">
+          <div class="orbit-card-top">
+            <span>HZN / STUDIO</span>
+            <span class="status-pill"><i></i> ACTIVE</span>
+          </div>
 
-        <div class="command-top">
-          <span>Studio Console</span>
-          <strong>ONLINE</strong>
-        </div>
+          <div class="orbit-stage">
+            <div class="planet">
+              <div class="planet-glow"></div>
+              <div class="planet-surface"></div>
+              <div class="planet-ring ring-one"></div>
+              <div class="planet-ring ring-two"></div>
+            </div>
+          </div>
 
-        <div class="command-core">
-          <h2>Active Development</h2>
-          <p>New games, updates, partnerships, and future Roblox releases are currently in production.</p>
-        </div>
-
-        <div class="signal-row">
-          <span></span>
-          Live systems operational
+          <div class="orbit-card-bottom">
+            <div>
+              <small>Current focus</small>
+              <strong>Production & recruitment</strong>
+            </div>
+            <span class="signal">LIVE</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <section id="live" class="page-section reveal">
-      <div class="section-heading">
-        <p>Live Ops</p>
-        <h2>Studio Performance</h2>
+    <section class="statement shell reveal">
+      <div class="statement-number">01</div>
+      <div>
+        <p class="section-label">The Studio</p>
+        <h2>Small leadership. Clear ownership. High standards.</h2>
+      </div>
+      <p class="statement-copy">
+        We structure projects around responsible leads instead of oversized org charts. That keeps communication direct, decisions fast, and the creative identity of each project intact.
+      </p>
+    </section>
+
+    <section class="principles shell">
+      <article class="principle-card reveal">
+        <span>01</span>
+        <h3>Build with intent</h3>
+        <p>Every system, visual, and update should have a reason to exist and a measurable effect on the player experience.</p>
+      </article>
+
+      <article class="principle-card reveal">
+        <span>02</span>
+        <h3>Keep teams accountable</h3>
+        <p>Clear ownership matters. Leads have room to make decisions, communicate priorities, and keep production moving.</p>
+      </article>
+
+      <article class="principle-card reveal">
+        <span>03</span>
+        <h3>Design for longevity</h3>
+        <p>We care about launch quality, but we also build around retention, iteration, community feedback, and future content.</p>
+      </article>
+    </section>
+
+    <section class="jobs-preview shell reveal">
+      <div class="section-head">
+        <div>
+          <p class="section-label">Careers</p>
+          <h2>Find your place at Horizon.</h2>
+        </div>
+
+        <a href="jobs.html" class="text-link">See all openings <span>↗</span></a>
       </div>
 
-      <div class="stat-grid">
-        <div class="premium-card">
-          <p>Total Visits</p>
-          <h3 id="totalVisits">Loading...</h3>
-        </div>
-
-        <div class="premium-card">
-          <p>Current CCU</p>
-          <h3 id="totalPlaying">Loading...</h3>
-        </div>
-
-        <div class="premium-card">
-          <p>Projects Tracked</p>
-          <h3>2</h3>
-        </div>
+      <div class="job-preview-list" id="featuredJobs">
+        <div class="job-preview skeleton-job"></div>
+        <div class="job-preview skeleton-job"></div>
+        <div class="job-preview skeleton-job"></div>
       </div>
     </section>
 
-    <section id="games" class="page-section reveal">
-      <div class="section-heading">
-        <p>Portfolio</p>
-        <h2>Our Games</h2>
+    <section id="leadership" class="leadership shell">
+      <div class="section-head reveal">
+        <div>
+          <p class="section-label">Leadership</p>
+          <h2>The people responsible for the direction.</h2>
+        </div>
+        <p>Only studio and discipline leads are listed publicly.</p>
       </div>
 
-      <div id="gamesGrid" class="game-grid">
-        <article class="premium-card game-placeholder">
-          <div class="skeleton"></div>
-          <h3>Loading...</h3>
-          <p>Fetching Roblox game data.</p>
+      <div class="leadership-grid">
+        <a class="lead-card reveal" href="https://www.roblox.com/users/1450872308/profile" target="_blank" rel="noopener noreferrer">
+          <div class="lead-image">
+            <img src="Assets/CEO_Image.jpg" alt="Thell Nangalez" loading="lazy" />
+            <span>EXECUTIVE</span>
+          </div>
+          <div class="lead-info">
+            <h3>Thell Nangalez</h3>
+            <p>Chief Executive Officer</p>
+            <blockquote>“Crazed Visionary CEO”</blockquote>
+          </div>
+        </a>
+
+        <a class="lead-card reveal" href="https://www.roblox.com/users/1479430932/profile" target="_blank" rel="noopener noreferrer">
+          <div class="lead-image">
+            <img src="Assets/CFO_Image.jpg" alt="Flxtraw" loading="lazy" />
+            <span>EXECUTIVE</span>
+          </div>
+          <div class="lead-info">
+            <h3>Flxtraw</h3>
+            <p>Chief Financial Officer</p>
+            <blockquote>“Demon-Lord”</blockquote>
+          </div>
+        </a>
+
+        <a class="lead-card reveal" href="https://www.roblox.com/users/3728831116/profile" target="_blank" rel="noopener noreferrer">
+          <div class="lead-image">
+            <img src="Assets/Engineer_Image.jpg" alt="Aeinh" loading="lazy" />
+            <span>ENGINEERING</span>
+          </div>
+          <div class="lead-info">
+            <h3>Aeinh</h3>
+            <p>Lead Engineer</p>
+            <blockquote>“Develop games that insulate real passion”</blockquote>
+          </div>
+        </a>
+
+        <article class="lead-card reveal">
+          <div class="lead-image">
+            <img src="Assets/KonImage.png" alt="Kon" loading="lazy" />
+            <span>MANAGEMENT</span>
+          </div>
+          <div class="lead-info">
+            <h3>Kon</h3>
+            <p>Head Manager</p>
+            <blockquote>“Wait i'm goated”</blockquote>
+          </div>
         </article>
 
-        <article class="premium-card game-placeholder">
-          <div class="skeleton"></div>
-          <h3>Loading...</h3>
-          <p>Fetching Roblox game data.</p>
+        <article class="lead-card reveal">
+          <div class="lead-image">
+            <img src="Assets/PlatImage.jpeg" alt="Plat" loading="lazy" />
+            <span>MANAGEMENT</span>
+          </div>
+          <div class="lead-info">
+            <h3>Plat</h3>
+            <p>Head Manager</p>
+            <blockquote>“Maybe in another life”</blockquote>
+          </div>
+        </article>
+
+        <article class="lead-card text-lead reveal">
+          <div class="lead-monogram">DZ</div>
+          <div class="lead-info">
+            <h3>dev.zaza</h3>
+            <p>Lead Project Manager</p>
+          </div>
+        </article>
+
+        <article class="lead-card text-lead reveal">
+          <div class="lead-monogram">PL</div>
+          <div class="lead-info">
+            <h3>some1helpme “Plans”</h3>
+            <p>Head Planner</p>
+          </div>
+        </article>
+
+        <article class="lead-card text-lead reveal">
+          <div class="lead-monogram">QA</div>
+          <div class="lead-info">
+            <h3>spadeqa</h3>
+            <p>QA & Balancing Lead</p>
+          </div>
+        </article>
+
+        <article class="lead-card text-lead reveal">
+          <div class="lead-monogram">QA</div>
+          <div class="lead-info">
+            <h3>marshicmellow</h3>
+            <p>QA & Balancing Lead</p>
+          </div>
         </article>
       </div>
     </section>
 
-    <section id="team" class="page-section reveal">
-      <div class="section-heading">
-        <p>Leadership</p>
-        <h2>Meet The Team</h2>
+    <section class="hub-cta shell reveal">
+      <div class="hub-visual" aria-hidden="true">
+        <div class="hub-ring hub-ring-a"></div>
+        <div class="hub-ring hub-ring-b"></div>
+        <div class="hub-core">HZN</div>
       </div>
 
-      <div class="team-grid">
-        <a class="team-card" href="https://www.roblox.com/users/1450872308/profile" target="_blank">
-          <img src="Assets/CEO_Image.jpg" alt="Thell Nangalez" />
-          <h3>Thell Nangalez</h3>
-          <p>Chief Executive Officer</p>
-          <blockquote>"Crazed Visionary CEO"</blockquote>
+      <div class="hub-copy">
+        <p class="section-label">Horizon Hub</p>
+        <h2>One place for applicants, contributors, and studio updates.</h2>
+        <p>
+          The Hub is our Discord home for recruitment and project communication. Job applicants must join it before submitting an application.
+        </p>
+        <a class="button button-primary" href="https://discord.gg/XdaetbyZF7" target="_blank" rel="noopener noreferrer">
+          Join Horizon Hub
+          <span aria-hidden="true">↗</span>
         </a>
-
-        <a class="team-card" href="https://www.roblox.com/users/1479430932/profile" target="_blank">
-          <img src="Assets/CFO_Image.jpg" alt="Flxtraw" />
-          <h3>Flxtraw</h3>
-          <p>Chief Financial Officer</p>
-          <blockquote>"Demon-Lord"</blockquote>
-        </a>
-
-        <a class="team-card" href="https://www.roblox.com/users/3728831116/profile" target="_blank">
-          <img src="Assets/Engineer_Image.jpg" alt="Aeinh" />
-          <h3>Aeinh</h3>
-          <p>Lead Engineer</p>
-          <blockquote>"Develop games that insulate real passion"</blockquote>
-        </a>
-
-        <div class="team-card">
-          <img src="Assets/KonImage.png" alt="Kon" />
-          <h3>Kon</h3>
-          <p>Head Manager</p>
-          <blockquote>"Wait i'm goated"</blockquote>
-        </div>
-
-        <div class="team-card">
-          <img src="Assets/PlatImage.jpeg" alt="Plat" />
-          <h3>Plat</h3>
-          <p>Head Manager</p>
-          <blockquote>"Maybe in another life"</blockquote>
-        </div>
       </div>
-    </section>
-
-    <section id="contributors" class="page-section reveal">
-      <div class="section-heading">
-        <p>Studio Contributors</p>
-        <h2>The Horizon Network</h2>
-        <span>A full production network powering development, design, art, animation, marketing, QA, and game direction.</span>
-      </div>
-
-      <div class="contributors-grid">
-        <div class="role-group">
-          <h3>Management</h3>
-          <div class="role-tags">
-            <span>friedchocolate0111 <b>Manager</b></span>
-          </div>
-        </div>
-
-        <div class="role-group">
-          <h3>Engineering</h3>
-          <div class="role-tags">
-            <span>haven0_1 <b>Coder</b></span>
-            <span>forgiverina <b>Coder</b></span>
-          </div>
-        </div>
-
-        <div class="role-group featured-role">
-          <h3>Game Design & Planning</h3>
-          <div class="role-tags">
-            <span>ikarisk <b>Game Designer</b></span>
-            <span>oak_logg <b>Game Designer</b></span>
-            <span>.zxrk. <b>Game Designer</b></span>
-            <span>mayypil139 <b>Game Designer</b></span>
-            <span>jeff_heser <b>Game Designer</b></span>
-            <span>not_salsa <b>Game Designer</b></span>
-            <span>von_1. <b>Game Designer</b></span>
-            <span>balinbaby <b>Game Designer</b></span>
-            <span>some1helpme "Plans" <b>Game Designer & Head Planner</b></span>
-          </div>
-        </div>
-
-        <div class="role-group featured-role">
-          <h3>Modeling</h3>
-          <div class="role-tags">
-            <span>thekareus <b>Modeler</b></span>
-            <span>anximu <b>Modeler</b></span>
-            <span>devbatata <b>Modeler</b></span>
-            <span>carton101 <b>Modeler & Animator</b></span>
-            <span>risingshadow. <b>Modeler</b></span>
-            <span>tellydev <b>Modeler</b></span>
-            <span>solidsbooky <b>Modeler</b></span>
-          </div>
-        </div>
-
-        <div class="role-group">
-          <h3>VFX & Interface</h3>
-          <div class="role-tags">
-            <span>DIB_Skull <b>VFX Artist</b></span>
-            <span>fritzgotvisionz <b>UI Artist</b></span>
-          </div>
-        </div>
-
-        <div class="role-group">
-          <h3>Animation</h3>
-          <div class="role-tags">
-            <span>ccultic <b>Animator</b></span>
-            <span>1850 <b>Animator</b></span>
-            <span>foodieboi <b>Animator</b></span>
-            <span>iswadish <b>Animator</b></span>
-          </div>
-        </div>
-
-        <div class="role-group">
-          <h3>Art & Audio</h3>
-          <div class="role-tags">
-            <span>d0v3lvs <b>Artist</b></span>
-            <span>ryanforbid <b>Artist</b></span>
-            <span>dongraphics04 <b>Artist</b></span>
-            <span>jacobistired <b>Artist</b></span>
-            <span>frozzy_1234 <b>Concept Artist</b></span>
-            <span>davidgns2 <b>Trailer Artist</b></span>
-            <span>polarinii <b>SFX Artist</b></span>
-          </div>
-        </div>
-
-        <div class="role-group">
-          <h3>Marketing</h3>
-          <div class="role-tags">
-            <span>naonyyy <b>Marketer</b></span>
-            <span>agonybuh <b>Marketer</b></span>
-          </div>
-        </div>
-
-        <div class="role-group">
-          <h3>Quality Assurance</h3>
-          <div class="role-tags">
-            <span>spadeqa <b>QA & Balancing Lead</b></span>
-            <span>marshicmellow <b>QA & Balancing Lead</b></span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="final-cta reveal">
-      <h2>Ready to build beyond the horizon?</h2>
-      <p>Contact Horizon Productions for acquisition, investment, publishing, or partnership opportunities.</p>
-      <a href="contact.html" class="primary-button">Start a Conversation</a>
     </section>
   </main>
 
-  <footer class="site-footer">
+  <footer class="site-footer shell">
+    <a class="brand footer-brand" href="index.html">
+      <img src="Assets/Logo.png" alt="" />
+      <span>Horizon Productions</span>
+    </a>
+
     <p>© 2026 Horizon Productions. All rights reserved.</p>
+
+    <div class="footer-links">
+      <a href="jobs.html">Jobs</a>
+      <a href="contact.html">Contact</a>
+      <a href="https://discord.gg/XdaetbyZF7" target="_blank" rel="noopener noreferrer">Hub ↗</a>
+    </div>
   </footer>
 
   <script src="main.js"></script>
