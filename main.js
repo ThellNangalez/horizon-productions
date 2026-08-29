@@ -1,37 +1,11 @@
 "use strict";
 
-/* =========================================================
-   HORIZON CONFIG
-========================================================= */
-
 const HUB_INVITE = "https://discord.gg/XdaetbyZF7";
 
-const GAMES = [
-  {
-    placeId: "140472728510165",
-    fallbackName: "Anime Ultra X",
-    url: "https://www.roblox.com/games/140472728510165/Anime-Ultra-X"
-  },
-  {
-    placeId: "90719247686306",
-    fallbackName: "Swim For Brainrot",
-    url: "https://www.roblox.com/games/90719247686306/Swim-For-Brainrot"
-  },
-  {
-    placeId: "89199115862748",
-    fallbackName: "Launch Rocket for Brainrots",
-    url: "https://www.roblox.com/games/89199115862748/Launch-Rocket-for-Brainrots"
-  }
-];
-
 /*
-  These are frontend job listings for now.
-
-  IMPORTANT:
-  When you add the Discord bot later, DO NOT place a bot token
-  inside this file. The browser exposes this JS publicly.
-
-  Later this array should come from a trusted backend API.
+  JOBS ARE CURRENTLY FRONT-END DATA.
+  When the Discord bot/API is added later, replace this array with a fetch()
+  to a trusted backend endpoint. Do NOT expose a Discord bot token in browser JS.
 */
 const JOBS = [
   {
@@ -40,94 +14,62 @@ const JOBS = [
     department: "Design",
     type: "Project-based",
     location: "Remote",
-    summary:
-      "Design progression, gameplay systems, loops, economies, and player-facing content for upcoming Horizon projects."
+    summary: "Design progression, systems, loops, and player-facing content for upcoming Roblox projects.",
+    requirements: ["Roblox design experience", "Strong written documentation", "Comfort working with engineers and artists"],
+    featured: true
   },
-
   {
     id: "roblox-engineer",
     title: "Roblox Engineer",
     department: "Engineering",
     type: "Project-based",
     location: "Remote",
-    summary:
-      "Build reliable gameplay systems, tools, interfaces, and production-ready Roblox infrastructure."
+    summary: "Build reliable gameplay systems, tools, interfaces, and production-ready Roblox infrastructure.",
+    requirements: ["Strong Luau fundamentals", "Experience shipping Roblox systems", "Clean collaboration and debugging habits"],
+    featured: true
   },
-
   {
     id: "vfx-artist",
     title: "VFX Artist",
     department: "Art",
     type: "Project-based",
     location: "Remote",
-    summary:
-      "Create readable, performant combat and environmental VFX that support each project's visual identity."
+    summary: "Create readable, performant combat and environmental VFX that support the visual identity of each project.",
+    requirements: ["Roblox VFX portfolio", "Strong timing and readability", "Performance awareness"],
+    featured: true
   },
-
   {
     id: "animator",
     title: "Animator",
     department: "Animation",
     type: "Project-based",
     location: "Remote",
-    summary:
-      "Produce character, combat, and gameplay animation with strong posing, timing, and implementation awareness."
+    summary: "Produce character, combat, and gameplay animation with strong posing, timing, and implementation awareness.",
+    requirements: ["Roblox animation portfolio", "Strong action timing", "Ability to work from references and direction"]
   },
-
   {
     id: "modeler",
     title: "3D Modeler",
     department: "3D",
     type: "Project-based",
     location: "Remote",
-    summary:
-      "Create optimized props, environments, and gameplay assets matching established project art direction."
+    summary: "Create optimized props, environments, and gameplay assets that fit established project art direction.",
+    requirements: ["Strong 3D portfolio", "Optimization knowledge", "Consistent style matching"]
   },
-
   {
     id: "ui-artist",
     title: "UI Artist",
     department: "UI/UX",
     type: "Project-based",
     location: "Remote",
-    summary:
-      "Design polished interfaces with strong hierarchy, readability, and a premium visual finish."
+    summary: "Design polished interfaces with strong hierarchy, game readability, and a premium visual finish.",
+    requirements: ["UI portfolio", "Strong hierarchy and composition", "Roblox implementation awareness"]
   }
 ];
 
-/* =========================================================
-   BACKGROUND MOUSE INTERACTION
-========================================================= */
-
-let pointerFrame = null;
-
-document.addEventListener(
-  "pointermove",
-  (event) => {
-    if (pointerFrame) {
-      cancelAnimationFrame(pointerFrame);
-    }
-
-    pointerFrame = requestAnimationFrame(() => {
-      document.documentElement.style.setProperty(
-        "--mouse-x",
-        `${event.clientX}px`
-      );
-
-      document.documentElement.style.setProperty(
-        "--mouse-y",
-        `${event.clientY}px`
-      );
-
-      pointerFrame = null;
-    });
-  },
-  { passive: true }
-);
-
-/* =========================================================
-   MOBILE MENU
-========================================================= */
+/* ---------------------------
+   MOBILE NAVIGATION
+---------------------------- */
 
 const menuButton = document.getElementById("menuButton");
 const menuClose = document.getElementById("menuClose");
@@ -139,65 +81,56 @@ function setMenu(open) {
   mobileMenu.classList.toggle("open", open);
   mobileMenu.setAttribute("aria-hidden", String(!open));
   menuButton.setAttribute("aria-expanded", String(open));
-
   document.body.classList.toggle("menu-open", open);
 }
 
 menuButton?.addEventListener("click", () => {
-  const isOpen = mobileMenu?.classList.contains("open") ?? false;
-  setMenu(!isOpen);
+  setMenu(!mobileMenu?.classList.contains("open"));
 });
 
-menuClose?.addEventListener("click", () => {
-  setMenu(false);
-});
+menuClose?.addEventListener("click", () => setMenu(false));
 
 mobileMenu?.addEventListener("click", (event) => {
-  if (event.target === mobileMenu) {
-    setMenu(false);
-  }
+  if (event.target === mobileMenu) setMenu(false);
 });
 
 mobileMenu?.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", () => {
-    setMenu(false);
-  });
+  link.addEventListener("click", () => setMenu(false));
 });
 
-/* =========================================================
-   REVEAL ANIMATIONS
-========================================================= */
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    setMenu(false);
+    closeJobModal();
+  }
+});
+
+/* ---------------------------
+   REVEAL
+---------------------------- */
 
 const revealElements = document.querySelectorAll(".reveal");
 
 if ("IntersectionObserver" in window) {
-  const revealObserver = new IntersectionObserver(
-    (entries, observer) => {
+  const observer = new IntersectionObserver(
+    (entries, obs) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-
         entry.target.classList.add("active");
-        observer.unobserve(entry.target);
+        obs.unobserve(entry.target);
       });
     },
-    {
-      threshold: 0.08,
-      rootMargin: "0px 0px -30px"
-    }
+    { threshold: 0.1, rootMargin: "0px 0px -30px" }
   );
 
-  revealElements.forEach((element) => {
-    revealObserver.observe(element);
-  });
+  revealElements.forEach((element) => observer.observe(element));
 } else {
-  revealElements.forEach((element) => {
-    element.classList.add("active");
-  });
+  revealElements.forEach((element) => element.classList.add("active"));
 }
 
-/* =========================================================
+/* ---------------------------
    HELPERS
-========================================================= */
+---------------------------- */
 
 function escapeHtml(value) {
   return String(value)
@@ -208,294 +141,37 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function formatNumber(value) {
-  const number = Number(value) || 0;
+function setFeedback(element, message, type = "") {
+  if (!element) return;
 
-  return new Intl.NumberFormat("en-US", {
-    notation: number >= 10000 ? "compact" : "standard",
-    compactDisplay: "short",
-    maximumFractionDigits: 1
-  }).format(number);
+  element.textContent = message;
+  element.className = `form-feedback visible ${type}`.trim();
 }
 
-async function fetchJson(url, timeout = 8000) {
-  const controller = new AbortController();
+/* ---------------------------
+   HOME FEATURED JOBS
+---------------------------- */
 
-  const timeoutId = setTimeout(() => {
-    controller.abort();
-  }, timeout);
+const featuredJobs = document.getElementById("featuredJobs");
 
-  try {
-    const response = await fetch(url, {
-      cache: "no-store",
-      signal: controller.signal,
-      headers: {
-        Accept: "application/json"
-      }
-    });
+if (featuredJobs) {
+  const featured = JOBS.filter((job) => job.featured).slice(0, 3);
 
-    if (!response.ok) {
-      throw new Error(`Request failed: ${response.status}`);
-    }
-
-    return await response.json();
-  } finally {
-    clearTimeout(timeoutId);
-  }
-}
-
-/* =========================================================
-   ROBLOX API
-========================================================= */
-
-async function resolveUniverse(game) {
-  const sources = [
-    `https://apis.roproxy.com/universes/v1/places/${game.placeId}/universe`,
-    `https://apis.roblox.com/universes/v1/places/${game.placeId}/universe`
-  ];
-
-  for (const url of sources) {
-    try {
-      const data = await fetchJson(url);
-
-      if (data?.universeId) {
-        return {
-          ...game,
-          universeId: data.universeId
-        };
-      }
-    } catch (error) {
-      console.warn(`Universe lookup failed: ${url}`, error);
-    }
-  }
-
-  return {
-    ...game,
-    universeId: null
-  };
-}
-
-async function fetchGameInfo(universeIds) {
-  const sources = [
-    `https://games.roproxy.com/v1/games?universeIds=${universeIds}`,
-    `https://games.roblox.com/v1/games?universeIds=${universeIds}`
-  ];
-
-  for (const url of sources) {
-    try {
-      return await fetchJson(url);
-    } catch (error) {
-      console.warn(`Game API failed: ${url}`, error);
-    }
-  }
-
-  throw new Error("Unable to fetch Roblox game information.");
-}
-
-async function fetchGameThumbnails(universeIds) {
-  const sources = [
-    `https://thumbnails.roproxy.com/v1/games/icons?universeIds=${universeIds}&size=512x512&format=Png&isCircular=false`,
-    `https://thumbnails.roblox.com/v1/games/icons?universeIds=${universeIds}&size=512x512&format=Png&isCircular=false`
-  ];
-
-  for (const url of sources) {
-    try {
-      return await fetchJson(url);
-    } catch (error) {
-      console.warn(`Thumbnail API failed: ${url}`, error);
-    }
-  }
-
-  return { data: [] };
-}
-
-function buildGameCard(game, info, thumbnail, large = false) {
-  const name = info?.name || game.fallbackName;
-
-  const description =
-    info?.description?.trim() ||
-    "A Horizon Productions Roblox experience.";
-
-  const visits = Number(info?.visits) || 0;
-  const playing = Number(info?.playing) || 0;
-
-  const imageHtml = thumbnail
-    ? `
-      <img
-        src="${escapeHtml(thumbnail)}"
-        alt="${escapeHtml(name)} thumbnail"
-        loading="lazy"
-      />
-    `
-    : `
-      <div class="game-fallback-image">
-        <span>${escapeHtml(name)}</span>
+  featuredJobs.innerHTML = featured.map((job) => `
+    <article class="job-preview">
+      <div>
+        <h3>${escapeHtml(job.title)}</h3>
+        <p>${escapeHtml(job.department)} · ${escapeHtml(job.location)}</p>
       </div>
-    `;
-
-  const className = large ? "portfolio-game" : "game-card";
-
-  return `
-    <article class="${className}">
-      <div class="game-thumb">
-        ${imageHtml}
-
-        <span class="live-badge">
-          <i></i>
-          ${formatNumber(playing)} playing
-        </span>
-      </div>
-
-      <div class="game-copy">
-        <h3>${escapeHtml(name)}</h3>
-
-        <p>
-          ${escapeHtml(description)}
-        </p>
-
-        <div class="game-stats">
-          <span>${formatNumber(visits)} visits</span>
-          <span>${formatNumber(playing)} online</span>
-        </div>
-
-        <a
-          class="game-view"
-          href="${escapeHtml(game.url)}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View on Roblox
-          <span>↗</span>
-        </a>
-      </div>
+      <span class="job-pill">${escapeHtml(job.type)}</span>
+      <a href="jobs.html?role=${encodeURIComponent(job.id)}">View role ↗</a>
     </article>
-  `;
+  `).join("");
 }
 
-function renderFallbackGames(container, large = false) {
-  if (!container) return;
-
-  container.innerHTML = GAMES.map((game) => {
-    return buildGameCard(game, null, null, large);
-  }).join("");
-}
-
-async function loadGamesData() {
-  const featuredGrid = document.getElementById("featuredGameGrid");
-  const gamesPageGrid = document.getElementById("gamesPageGrid");
-
-  if (!featuredGrid && !gamesPageGrid) return;
-
-  try {
-    const resolvedGames = await Promise.all(
-      GAMES.map((game) => resolveUniverse(game))
-    );
-
-    const validGames = resolvedGames.filter(
-      (game) => game.universeId !== null
-    );
-
-    if (!validGames.length) {
-      throw new Error("No universe IDs resolved.");
-    }
-
-    const universeIds = validGames
-      .map((game) => game.universeId)
-      .join(",");
-
-    const [gameData, thumbnailData] = await Promise.all([
-      fetchGameInfo(universeIds),
-      fetchGameThumbnails(universeIds)
-    ]);
-
-    const gameMap = new Map(
-      (gameData?.data || []).map((game) => [
-        String(game.id),
-        game
-      ])
-    );
-
-    const thumbnailMap = new Map(
-      (thumbnailData?.data || []).map((thumbnail) => [
-        String(thumbnail.targetId),
-        thumbnail.imageUrl
-      ])
-    );
-
-    let totalVisits = 0;
-    let totalPlaying = 0;
-
-    const standardCards = [];
-    const largeCards = [];
-
-    resolvedGames.forEach((game) => {
-      const info = game.universeId
-        ? gameMap.get(String(game.universeId))
-        : null;
-
-      const thumbnail = game.universeId
-        ? thumbnailMap.get(String(game.universeId))
-        : null;
-
-      totalVisits += Number(info?.visits) || 0;
-      totalPlaying += Number(info?.playing) || 0;
-
-      standardCards.push(
-        buildGameCard(game, info, thumbnail, false)
-      );
-
-      largeCards.push(
-        buildGameCard(game, info, thumbnail, true)
-      );
-    });
-
-    if (featuredGrid) {
-      featuredGrid.innerHTML = standardCards.join("");
-    }
-
-    if (gamesPageGrid) {
-      gamesPageGrid.innerHTML = largeCards.join("");
-    }
-
-    const portfolioVisits = document.getElementById("portfolioVisits");
-    const portfolioPlaying = document.getElementById("portfolioPlaying");
-    const gamesTracked = document.getElementById("gamesTracked");
-
-    if (portfolioVisits) {
-      portfolioVisits.textContent = formatNumber(totalVisits);
-    }
-
-    if (portfolioPlaying) {
-      portfolioPlaying.textContent = formatNumber(totalPlaying);
-    }
-
-    if (gamesTracked) {
-      gamesTracked.textContent = String(GAMES.length);
-    }
-  } catch (error) {
-    console.warn("Roblox data unavailable:", error);
-
-    renderFallbackGames(featuredGrid, false);
-    renderFallbackGames(gamesPageGrid, true);
-
-    const portfolioVisits = document.getElementById("portfolioVisits");
-    const portfolioPlaying = document.getElementById("portfolioPlaying");
-
-    if (portfolioVisits) {
-      portfolioVisits.textContent = "Unavailable";
-    }
-
-    if (portfolioPlaying) {
-      portfolioPlaying.textContent = "Unavailable";
-    }
-  }
-}
-
-loadGamesData();
-
-/* =========================================================
-   JOB FILTERS
-========================================================= */
+/* ---------------------------
+   JOB LIST
+---------------------------- */
 
 const jobsGrid = document.getElementById("jobsGrid");
 const jobFilters = document.getElementById("jobFilters");
@@ -507,31 +183,21 @@ let activeDepartment = "All";
 function renderJobFilters() {
   if (!jobFilters) return;
 
-  const departments = [
-    "All",
-    ...new Set(JOBS.map((job) => job.department))
-  ];
+  const departments = ["All", ...new Set(JOBS.map((job) => job.department))];
 
-  jobFilters.innerHTML = departments
-    .map((department) => {
-      const active = department === activeDepartment;
-
-      return `
-        <button
-          type="button"
-          class="filter-button ${active ? "active" : ""}"
-          data-filter="${escapeHtml(department)}"
-        >
-          ${escapeHtml(department)}
-        </button>
-      `;
-    })
-    .join("");
+  jobFilters.innerHTML = departments.map((department) => `
+    <button
+      type="button"
+      class="filter-button ${department === activeDepartment ? "active" : ""}"
+      data-filter="${escapeHtml(department)}"
+    >
+      ${escapeHtml(department)}
+    </button>
+  `).join("");
 
   jobFilters.querySelectorAll("[data-filter]").forEach((button) => {
     button.addEventListener("click", () => {
       activeDepartment = button.dataset.filter || "All";
-
       renderJobFilters();
       renderJobs();
     });
@@ -541,162 +207,101 @@ function renderJobFilters() {
 function renderJobs() {
   if (!jobsGrid) return;
 
-  const filteredJobs =
-    activeDepartment === "All"
-      ? JOBS
-      : JOBS.filter(
-          (job) => job.department === activeDepartment
-        );
+  const filtered = activeDepartment === "All"
+    ? JOBS
+    : JOBS.filter((job) => job.department === activeDepartment);
 
   if (jobCount) {
-    jobCount.textContent =
-      `${filteredJobs.length} open ` +
-      `${filteredJobs.length === 1 ? "role" : "roles"}`;
+    jobCount.textContent = `${filtered.length} open ${filtered.length === 1 ? "role" : "roles"}`;
   }
 
   if (emptyJobs) {
-    emptyJobs.hidden = filteredJobs.length !== 0;
+    emptyJobs.hidden = filtered.length !== 0;
   }
 
-  jobsGrid.innerHTML = filteredJobs
-    .map(
-      (job) => `
-        <article class="job-card">
-          <div class="job-card-top">
-            <div>
-              <span class="department">
-                ${escapeHtml(job.department)}
-              </span>
+  jobsGrid.innerHTML = filtered.map((job) => `
+    <article class="job-card reveal active">
+      <div class="job-card-top">
+        <div>
+          <span class="department">${escapeHtml(job.department)}</span>
+          <h3>${escapeHtml(job.title)}</h3>
+        </div>
+        <span class="job-pill">${escapeHtml(job.type)}</span>
+      </div>
 
-              <h3>${escapeHtml(job.title)}</h3>
-            </div>
+      <p>${escapeHtml(job.summary)}</p>
 
-            <span class="job-pill">
-              ${escapeHtml(job.type)}
-            </span>
-          </div>
+      <div class="job-card-footer">
+        <div class="job-meta">
+          <span class="job-pill">${escapeHtml(job.location)}</span>
+          ${job.featured ? `<span class="job-pill">Priority</span>` : ""}
+        </div>
 
-          <p>${escapeHtml(job.summary)}</p>
-
-          <div class="job-card-footer">
-            <div class="job-meta">
-              <span class="job-pill">
-                ${escapeHtml(job.location)}
-              </span>
-            </div>
-
-            <button
-              type="button"
-              class="apply-button"
-              data-apply="${escapeHtml(job.id)}"
-            >
-              Apply ↗
-            </button>
-          </div>
-        </article>
-      `
-    )
-    .join("");
+        <button class="apply-button" type="button" data-apply="${escapeHtml(job.id)}">
+          Apply ↗
+        </button>
+      </div>
+    </article>
+  `).join("");
 
   jobsGrid.querySelectorAll("[data-apply]").forEach((button) => {
-    button.addEventListener("click", () => {
-      openJobModal(button.dataset.apply);
-    });
+    button.addEventListener("click", () => openJobModal(button.dataset.apply));
   });
 }
 
 renderJobFilters();
 renderJobs();
 
-/* =========================================================
+/* ---------------------------
    JOB APPLICATION MODAL
-========================================================= */
+---------------------------- */
 
 const jobModal = document.getElementById("jobModal");
 const hubConfirmed = document.getElementById("hubConfirmed");
-const applicationForm =
-  document.getElementById("jobApplicationForm");
-
-const applicationFeedback =
-  document.getElementById("applicationFeedback");
+const applicationForm = document.getElementById("jobApplicationForm");
+const applicationFeedback = document.getElementById("applicationFeedback");
 
 function openJobModal(jobId) {
   if (!jobModal) return;
 
   const job = JOBS.find((item) => item.id === jobId);
-
   if (!job) return;
 
   const title = document.getElementById("applicationTitle");
-  const department =
-    document.getElementById("applicationDepartment");
+  const department = document.getElementById("applicationDepartment");
+  const type = document.getElementById("applicationType");
+  const intro = document.getElementById("applicationIntro");
+  const roleInput = document.getElementById("jobRole");
 
-  const type =
-    document.getElementById("applicationType");
+  if (title) title.textContent = `Apply — ${job.title}`;
+  if (department) department.textContent = job.department;
+  if (type) type.textContent = `${job.type} · ${job.location}`;
+  if (intro) intro.textContent = job.summary;
+  if (roleInput) roleInput.value = job.title;
 
-  const intro =
-    document.getElementById("applicationIntro");
-
-  const roleInput =
-    document.getElementById("jobRole");
-
-  if (title) {
-    title.textContent = `Apply — ${job.title}`;
-  }
-
-  if (department) {
-    department.textContent = job.department;
-  }
-
-  if (type) {
-    type.textContent = `${job.type} · ${job.location}`;
-  }
-
-  if (intro) {
-    intro.textContent = job.summary;
-  }
-
-  if (roleInput) {
-    roleInput.value = job.title;
-  }
-
-  if (hubConfirmed) {
-    hubConfirmed.checked = false;
-  }
-
-  if (applicationForm) {
-    applicationForm.hidden = true;
-  }
-
-  if (applicationFeedback) {
-    applicationFeedback.textContent = "";
-    applicationFeedback.className = "form-feedback";
-  }
+  if (hubConfirmed) hubConfirmed.checked = false;
+  if (applicationForm) applicationForm.hidden = true;
+  if (applicationFeedback) applicationFeedback.className = "form-feedback";
 
   jobModal.classList.add("open");
   jobModal.setAttribute("aria-hidden", "false");
-
   document.body.classList.add("modal-open");
 }
 
 function closeJobModal() {
-  if (!jobModal) return;
+  if (!jobModal?.classList.contains("open")) return;
 
   jobModal.classList.remove("open");
   jobModal.setAttribute("aria-hidden", "true");
-
   document.body.classList.remove("modal-open");
 }
 
-jobModal
-  ?.querySelectorAll("[data-close-modal]")
-  .forEach((element) => {
-    element.addEventListener("click", closeJobModal);
-  });
+jobModal?.querySelectorAll("[data-close-modal]").forEach((element) => {
+  element.addEventListener("click", closeJobModal);
+});
 
 hubConfirmed?.addEventListener("change", () => {
   if (!applicationForm) return;
-
   applicationForm.hidden = !hubConfirmed.checked;
 });
 
@@ -704,49 +309,20 @@ applicationForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   if (!hubConfirmed?.checked) {
-    showApplicationFeedback(
-      "Join Horizon Hub before continuing.",
-      "error"
-    );
-
+    setFeedback(applicationFeedback, "Join Horizon Hub and confirm membership before applying.", "error");
     return;
   }
 
-  const role =
-    document.getElementById("jobRole")?.value.trim() || "";
+  const role = document.getElementById("jobRole")?.value.trim() || "";
+  const discord = document.getElementById("appDiscord")?.value.trim() || "";
+  const roblox = document.getElementById("appRoblox")?.value.trim() || "";
+  const portfolio = document.getElementById("appPortfolio")?.value.trim() || "";
+  const experience = document.getElementById("appExperience")?.value.trim() || "";
+  const why = document.getElementById("appWhy")?.value.trim() || "";
+  const availability = document.getElementById("appAvailability")?.value.trim() || "";
 
-  const discord =
-    document.getElementById("appDiscord")?.value.trim() || "";
-
-  const roblox =
-    document.getElementById("appRoblox")?.value.trim() || "";
-
-  const portfolio =
-    document.getElementById("appPortfolio")?.value.trim() || "";
-
-  const experience =
-    document.getElementById("appExperience")?.value.trim() || "";
-
-  const why =
-    document.getElementById("appWhy")?.value.trim() || "";
-
-  const availability =
-    document.getElementById("appAvailability")?.value.trim() || "";
-
-  if (
-    !role ||
-    !discord ||
-    !roblox ||
-    !portfolio ||
-    !experience ||
-    !why ||
-    !availability
-  ) {
-    showApplicationFeedback(
-      "Complete every field before preparing your application.",
-      "error"
-    );
-
+  if (!role || !discord || !roblox || !portfolio || !experience || !why || !availability) {
+    setFeedback(applicationFeedback, "Complete every field before preparing your application.", "error");
     return;
   }
 
@@ -768,123 +344,65 @@ applicationForm?.addEventListener("submit", async (event) => {
 
   try {
     await navigator.clipboard.writeText(application);
-
-    showApplicationFeedback(
-      "Application copied. Continue in Horizon Hub and paste it into the recruitment flow.",
+    setFeedback(
+      applicationFeedback,
+      "Application copied. Open Horizon Hub and paste it into the recruitment flow. Automated tickets will be added later.",
       "success"
     );
-  } catch (error) {
-    showApplicationFeedback(
-      "Clipboard access was blocked. Copy your answers manually before continuing to Horizon Hub.",
+  } catch {
+    setFeedback(
+      applicationFeedback,
+      "Your browser blocked clipboard access. Copy the application manually from the fields, then continue in Horizon Hub.",
       "error"
     );
   }
 
   setTimeout(() => {
-    window.open(
-      HUB_INVITE,
-      "_blank",
-      "noopener,noreferrer"
-    );
-  }, 500);
+    window.open(HUB_INVITE, "_blank", "noopener,noreferrer");
+  }, 450);
 });
 
-function showApplicationFeedback(message, type) {
-  if (!applicationFeedback) return;
-
-  applicationFeedback.textContent = message;
-
-  applicationFeedback.className =
-    `form-feedback visible ${type}`;
-}
-
-/* =========================================================
-   AUTO OPEN JOB FROM ?role=
-========================================================= */
-
+/* Auto-open role from ?role= */
 if (jobsGrid) {
-  const parameters = new URLSearchParams(
-    window.location.search
-  );
+  const params = new URLSearchParams(window.location.search);
+  const role = params.get("role");
 
-  const selectedRole = parameters.get("role");
-
-  if (
-    selectedRole &&
-    JOBS.some((job) => job.id === selectedRole)
-  ) {
-    setTimeout(() => {
-      openJobModal(selectedRole);
-    }, 300);
+  if (role && JOBS.some((job) => job.id === role)) {
+    setTimeout(() => openJobModal(role), 350);
   }
 }
 
-/* =========================================================
+/* ---------------------------
    BUSINESS CONTACT FORM
-========================================================= */
+---------------------------- */
 
-const contactForm =
-  document.getElementById("contactForm");
-
-const contactFeedback =
-  document.getElementById("contactFeedback");
+const contactForm = document.getElementById("contactForm");
+const contactFeedback = document.getElementById("contactFeedback");
 
 contactForm?.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  const name =
-    document.getElementById("contactName")?.value.trim() || "";
+  const name = document.getElementById("contactName")?.value.trim() || "";
+  const email = document.getElementById("contactEmail")?.value.trim() || "";
+  const reason = document.getElementById("contactReason")?.value || "";
+  const message = document.getElementById("contactMessage")?.value.trim() || "";
 
-  const email =
-    document.getElementById("contactEmail")?.value.trim() || "";
-
-  const reason =
-    document.getElementById("contactReason")?.value || "";
-
-  const message =
-    document.getElementById("contactMessage")?.value.trim() || "";
-
-  if (
-    name.length < 2 ||
-    !email ||
-    !reason ||
-    message.length < 10
-  ) {
-    if (contactFeedback) {
-      contactFeedback.textContent =
-        "Complete all fields before preparing your email.";
-
-      contactFeedback.className =
-        "form-feedback visible error";
-    }
-
+  if (name.length < 2 || !email || !reason || message.length < 10) {
+    setFeedback(contactFeedback, "Complete all fields before preparing your email.", "error");
     return;
   }
 
-  const subject = encodeURIComponent(
-    `Horizon Productions — ${reason}`
-  );
-
-  const body = encodeURIComponent(
-    [
-      "HORIZON PRODUCTIONS — BUSINESS INQUIRY",
-      "",
-      `Name / Company: ${name}`,
-      `Reply Email: ${email}`,
-      `Inquiry Type: ${reason}`,
-      "",
-      "MESSAGE",
-      message
-    ].join("\n")
-  );
-
-  if (contactFeedback) {
-    contactFeedback.textContent =
-      "Opening Gmail with your inquiry prepared.";
-
-    contactFeedback.className =
-      "form-feedback visible success";
-  }
+  const subject = encodeURIComponent(`Horizon Productions — ${reason}`);
+  const body = encodeURIComponent([
+    "HORIZON PRODUCTIONS — BUSINESS INQUIRY",
+    "",
+    `Name / Company: ${name}`,
+    `Reply Email: ${email}`,
+    `Inquiry Type: ${reason}`,
+    "",
+    "MESSAGE",
+    message
+  ].join("\n"));
 
   const gmailUrl =
     `https://mail.google.com/mail/?view=cm&fs=1` +
@@ -892,25 +410,127 @@ contactForm?.addEventListener("submit", (event) => {
     `&su=${subject}` +
     `&body=${body}`;
 
-  const popup = window.open(
-    gmailUrl,
-    "_blank",
-    "noopener,noreferrer"
-  );
+  setFeedback(contactFeedback, "Opening Gmail with your inquiry prepared.", "success");
+
+  const popup = window.open(gmailUrl, "_blank", "noopener,noreferrer");
 
   if (!popup) {
-    window.location.href =
-      `mailto:tbg.dev.alt@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:tbg.dev.alt@gmail.com?subject=${subject}&body=${body}`;
   }
 });
 
-/* =========================================================
-   ESCAPE KEY
-========================================================= */
+/* ---------------------------
+   INTERACTIVE STAR BACKGROUND
+   Powered by tsParticles slim bundle.
+---------------------------- */
 
-document.addEventListener("keydown", (event) => {
-  if (event.key !== "Escape") return;
+async function initInteractiveBackground() {
+  const target = document.getElementById("tsparticles");
 
-  setMenu(false);
-  closeJobModal();
-});
+  if (!target || !window.tsParticles || typeof window.loadSlim !== "function") {
+    return;
+  }
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const compact = window.matchMedia("(max-width: 760px)").matches;
+
+  try {
+    await window.loadSlim(window.tsParticles);
+
+    await window.tsParticles.load({
+      id: "tsparticles",
+      options: {
+        fullScreen: {
+          enable: false
+        },
+        fpsLimit: reducedMotion ? 24 : 50,
+        detectRetina: true,
+        pauseOnBlur: true,
+        background: {
+          color: "transparent"
+        },
+        interactivity: {
+          detectsOn: "window",
+          events: {
+            onHover: {
+              enable: !reducedMotion,
+              mode: "grab"
+            },
+            onClick: {
+              enable: !reducedMotion,
+              mode: "push"
+            },
+            resize: true
+          },
+          modes: {
+            grab: {
+              distance: compact ? 95 : 145,
+              links: {
+                opacity: 0.22,
+                color: "#c793ff"
+              }
+            },
+            push: {
+              quantity: 2
+            }
+          }
+        },
+        particles: {
+          color: {
+            value: ["#ffffff", "#ffc071", "#b77cff"]
+          },
+          links: {
+            enable: true,
+            distance: compact ? 88 : 120,
+            color: "#9d70d7",
+            opacity: 0.055,
+            width: 1
+          },
+          move: {
+            enable: !reducedMotion,
+            direction: "none",
+            random: true,
+            speed: compact ? 0.18 : 0.24,
+            straight: false,
+            outModes: {
+              default: "out"
+            }
+          },
+          number: {
+            value: reducedMotion ? 28 : compact ? 42 : 68,
+            density: {
+              enable: true,
+              width: 1500,
+              height: 900
+            }
+          },
+          opacity: {
+            value: {
+              min: 0.18,
+              max: 0.68
+            },
+            animation: {
+              enable: !reducedMotion,
+              speed: 0.4,
+              sync: false
+            }
+          },
+          shape: {
+            type: "circle"
+          },
+          size: {
+            value: {
+              min: 0.65,
+              max: 1.7
+            }
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.warn("Interactive star field could not be initialized:", error);
+  }
+}
+
+initInteractiveBackground();
+\n\n/* ===== HRZN Games Portfolio ===== */\nconst HRZN_GAMES=[\n  {placeId:"140472728510165",fallbackName:"Anime Ultra X",url:"https://www.roblox.com/games/140472728510165/Anime-Ultra-X"},\n  {placeId:"90719247686306",fallbackName:"Swim For Brainrot",url:"https://www.roblox.com/games/90719247686306/Swim-For-Brainrot"},\n  {placeId:"89199115862748",fallbackName:"Launch Rocket for Brainrots",url:"https://www.roblox.com/games/89199115862748/Launch-Rocket-for-Brainrots"}\n];\nfunction hrznFmt(n){n=Number(n)||0;return new Intl.NumberFormat("en-US",{notation:n>=10000?"compact":"standard",maximumFractionDigits:1}).format(n)}\nfunction hrznEsc(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}\nasync function hrznJSON(url){const r=await fetch(url,{cache:"no-store"});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r.json()}\nasync function loadHRZNGames(){const grid=document.getElementById("gamesPageGrid");if(!grid)return;try{const resolved=await Promise.all(HRZN_GAMES.map(async g=>{const d=await hrznJSON(`https://apis.roproxy.com/universes/v1/places/${g.placeId}/universe`);return {...g,universeId:d.universeId}}));const ids=resolved.map(g=>g.universeId).join(",");const [info,thumbs]=await Promise.all([hrznJSON(`https://games.roproxy.com/v1/games?universeIds=${ids}`),hrznJSON(`https://thumbnails.roproxy.com/v1/games/icons?universeIds=${ids}&size=512x512&format=Png&isCircular=false`)]);const im=new Map((info.data||[]).map(x=>[String(x.id),x]));const tm=new Map((thumbs.data||[]).map(x=>[String(x.targetId),x.imageUrl]));let visits=0,playing=0;grid.innerHTML=resolved.map(g=>{const i=im.get(String(g.universeId))||{},name=i.name||g.fallbackName,desc=(i.description||"A Horizon Productions Roblox experience.").trim(),v=Number(i.visits)||0,p=Number(i.playing)||0,t=tm.get(String(g.universeId));visits+=v;playing+=p;return `<article class="portfolio-game"><div class="game-thumb">${t?`<img src="${hrznEsc(t)}" alt="${hrznEsc(name)} thumbnail" loading="lazy">`:""}<span class="live-badge">${hrznFmt(p)} playing</span></div><div class="game-copy"><h3>${hrznEsc(name)}</h3><p>${hrznEsc(desc)}</p><div class="game-stats"><span>${hrznFmt(v)} visits</span><span>${hrznFmt(p)} online</span></div><a class="game-view" href="${hrznEsc(g.url)}" target="_blank" rel="noopener noreferrer">View on Roblox <span>↗</span></a></div></article>`}).join("");document.getElementById("portfolioVisits").textContent=hrznFmt(visits);document.getElementById("portfolioPlaying").textContent=hrznFmt(playing)}catch(err){console.warn("HRZN portfolio API unavailable",err);grid.innerHTML=HRZN_GAMES.map(g=>`<article class="portfolio-game"><div class="game-thumb"></div><div class="game-copy"><h3>${hrznEsc(g.fallbackName)}</h3><p>Live Roblox statistics are temporarily unavailable.</p><a class="game-view" href="${hrznEsc(g.url)}" target="_blank" rel="noopener noreferrer">View on Roblox <span>↗</span></a></div></article>`).join("");const a=document.getElementById("portfolioVisits"),b=document.getElementById("portfolioPlaying");if(a)a.textContent="Unavailable";if(b)b.textContent="Unavailable"}}\nloadHRZNGames();\n
