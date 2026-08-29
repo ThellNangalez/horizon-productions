@@ -4,34 +4,227 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#08060d" />
-  <meta name="description" content="Explore games from Horizon Productions." />
+  <meta name="description" content="Games by Horizon Productions." />
+
   <title>Games | Horizon Productions</title>
+
   <link rel="icon" type="image/png" href="Assets/favicon.png" />
-  <link rel="apple-touch-icon" href="Assets/favicon.png" />
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body data-page="games">
-  <div class="site-bg" aria-hidden="true"><div id="tsparticles"></div><div class="aurora aurora-orange"></div><div class="aurora aurora-purple"></div><div class="stars stars-a"></div><div class="stars stars-b"></div><div class="grid-fade"></div></div>
+
+  <div class="site-bg" aria-hidden="true">
+    <div id="tsparticles"></div>
+    <div class="aurora aurora-orange"></div>
+    <div class="aurora aurora-purple"></div>
+    <div class="stars stars-a"></div>
+    <div class="stars stars-b"></div>
+    <div class="grid-fade"></div>
+  </div>
+
   <header class="site-header">
-    <a class="brand" href="/" aria-label="Horizon Productions home"><img src="Assets/Logo.png" alt="" /><span>Horizon Productions</span></a>
-    <nav class="desktop-nav" aria-label="Primary navigation"><a href="/">Studio</a><a class="active" href="/games">Games</a><a href="/team">Team</a><a href="/jobs">Jobs</a><a href="/contact">Contact</a></nav>
-    <div class="header-actions"><a class="hub-link desktop-only" href="https://discord.gg/XdaetbyZF7" target="_blank" rel="noopener noreferrer">Horizon Hub <span>↗</span></a><button class="menu-button" id="menuButton" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></div>
+
+    <a class="brand" href="/">
+      <img src="Assets/Logo.png" alt="" />
+      <span>Horizon Productions</span>
+    </a>
+
+    <nav class="desktop-nav">
+      <a href="/">Studio</a>
+      <a class="active" href="/games">Games</a>
+      <a href="/team">Team</a>
+      <a href="/jobs">Jobs</a>
+      <a href="/contact">Contact</a>
+    </nav>
+
+    <div class="header-actions">
+
+      <a
+        class="hub-link desktop-only"
+        href="https://discord.gg/XdaetbyZF7"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Horizon Hub
+        <span>↗</span>
+      </a>
+
+      <button
+        class="menu-button"
+        id="menuButton"
+        type="button"
+        aria-label="Open navigation menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+
   </header>
-  <div class="mobile-menu" id="mobileMenu" aria-hidden="true"><div class="mobile-menu-inner"><div class="mobile-menu-top"><span>Navigate</span><button id="menuClose" type="button" aria-label="Close menu">×</button></div><nav><a href="/">Studio</a><a href="/games">Games</a><a href="/team">Team</a><a href="/jobs">Jobs</a><a href="/contact">Contact</a></nav><a class="button button-primary mobile-hub" href="https://discord.gg/XdaetbyZF7" target="_blank" rel="noopener noreferrer">Join Horizon Hub</a></div></div>
+
+  <div
+    class="mobile-menu"
+    id="mobileMenu"
+    aria-hidden="true"
+  >
+    <div class="mobile-menu-inner">
+
+      <div class="mobile-menu-top">
+        <span>Navigate</span>
+
+        <button
+          id="menuClose"
+          type="button"
+          aria-label="Close navigation menu"
+        >
+          ×
+        </button>
+      </div>
+
+      <nav>
+        <a href="/">Studio</a>
+        <a href="/games">Games</a>
+        <a href="/team">Team</a>
+        <a href="/jobs">Jobs</a>
+        <a href="/contact">Contact</a>
+      </nav>
+
+      <a
+        class="button button-primary mobile-hub"
+        href="https://discord.gg/XdaetbyZF7"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Join Horizon Hub
+      </a>
+
+    </div>
+  </div>
+
   <main>
-    <section class="games-hero shell">
-      <div class="reveal"><div class="eyebrow"><span class="eyebrow-line"></span> HRZN Portfolio</div><h1>Games built to <span class="gradient-text">hold attention.</span></h1><p>Selected experiences developed, operated, or supported by Horizon Productions. Live Roblox statistics load automatically when available.</p></div>
-      <aside class="portfolio-summary reveal"><span>HRZN / PORTFOLIO</span><div><small>Tracked titles</small><strong>3</strong></div><div><small>Total visits</small><strong id="portfolioVisits">Loading…</strong></div><div><small>Players online</small><strong id="portfolioPlaying">Loading…</strong></div></aside>
+
+    <section class="games-hero shell reveal">
+
+      <div>
+
+        <div class="eyebrow">
+          <span class="eyebrow-line"></span>
+          Games
+        </div>
+
+        <h1>
+          Games built to
+          <span class="gradient-text">hold attention.</span>
+        </h1>
+
+      </div>
+
+      <div class="portfolio-summary">
+
+        <span>HRZN / PORTFOLIO</span>
+
+        <div>
+          <small>Tracked titles</small>
+          <strong id="gamesTracked">4</strong>
+        </div>
+
+        <div>
+          <small>Total visits</small>
+          <strong id="portfolioVisits">Loading…</strong>
+        </div>
+
+        <div>
+          <small>Players online</small>
+          <strong id="portfolioPlaying">Loading…</strong>
+        </div>
+
+      </div>
+
     </section>
-    <section class="games-showcase shell">
-      <div class="games-toolbar reveal"><div><p class="section-label">All games</p><h2>Current portfolio.</h2></div><p>A focused portfolio presentation inspired by the clarity of large Roblox studios, rebuilt around Horizon's lighter orange–purple space identity.</p></div>
-      <div class="games-page-grid" id="gamesPageGrid"><article class="portfolio-game skeleton-job"></article><article class="portfolio-game skeleton-job"></article><article class="portfolio-game skeleton-job"></article></div>
+
+    <section class="games-showcase">
+
+      <div class="shell">
+
+        <div class="games-toolbar reveal">
+
+          <div>
+            <span class="section-label">ALL GAMES</span>
+
+            <h2>
+              Current portfolio.
+            </h2>
+          </div>
+
+        </div>
+
+        <div
+          class="games-page-grid"
+          id="gamesPageGrid"
+        >
+
+          <article class="portfolio-game game-loading"></article>
+          <article class="portfolio-game game-loading"></article>
+          <article class="portfolio-game game-loading"></article>
+          <article class="portfolio-game game-loading"></article>
+
+        </div>
+
+      </div>
+
     </section>
-    <section class="portfolio-note shell reveal"><span>Work with Horizon</span><h2>Have a game that could fit our portfolio?</h2><p>For acquisition, publishing, co-development, or investment conversations, contact the studio directly.</p><a class="button button-primary" href="/contact">Talk to Horizon <span>↗</span></a></section>
+
+    <section class="portfolio-note shell reveal">
+
+      <span>WORK WITH HORIZON</span>
+
+      <h2>
+        Have a game that could fit our portfolio?
+      </h2>
+
+      <p>
+        For acquisition, publishing, co-development,
+        or investment conversations, contact the studio directly.
+      </p>
+
+      <a
+        class="button button-primary"
+        href="/contact"
+      >
+        Talk to Horizon
+        <span>↗</span>
+      </a>
+
+    </section>
+
   </main>
-  <footer class="site-footer shell"><a class="brand footer-brand" href="/"><img src="Assets/Logo.png" alt="" /><span>Horizon Productions</span></a><p>© 2026 Horizon Productions. All rights reserved.</p><div class="footer-links"><a href="/games">Games</a><a href="/team">Team</a><a href="/jobs">Jobs</a><a href="/contact">Contact</a></div></footer>
+
+  <footer class="site-footer shell">
+
+    <a class="brand footer-brand" href="/">
+      <img src="Assets/Logo.png" alt="" />
+      <span>Horizon Productions</span>
+    </a>
+
+    <p>
+      © 2026 Horizon Productions. All rights reserved.
+    </p>
+
+    <div class="footer-links">
+      <a href="/games">Games</a>
+      <a href="/team">Team</a>
+      <a href="/jobs">Jobs</a>
+      <a href="/contact">Contact</a>
+    </div>
+
+  </footer>
+
   <script src="https://cdn.jsdelivr.net/npm/@tsparticles/engine@4/tsparticles.engine.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tsparticles/slim@4/tsparticles.slim.bundle.min.js"></script>
   <script src="main.js"></script>
+
 </body>
 </html>
