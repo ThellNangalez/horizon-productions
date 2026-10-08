@@ -30,6 +30,11 @@ const GAMES = [
     placeId: "127519525950247",
     fallbackName: "Manhwa Legends",
     url: "https://www.roblox.com/games/127519525950247/Manhwa-Legends"
+  },
+  {
+    placeId: "16347800591",
+    fallbackName: "Anime Royale",
+    url: "https://www.roblox.com/games/16347800591/Anime-Royale"
   }
 ];
 
@@ -119,6 +124,17 @@ document.addEventListener(
   },
   { passive: true }
 );
+
+/* =========================================================
+   HEADER SCROLL STATE
+========================================================= */
+
+const updateScrolled = () => {
+  document.body.classList.toggle("scrolled", window.scrollY > 24);
+};
+
+window.addEventListener("scroll", updateScrolled, { passive: true });
+updateScrolled();
 
 /* =========================================================
    MOBILE MENU
@@ -290,134 +306,137 @@ async function fetchGameInfo(universeIds) {
 }
 
 async function fetchGameThumbnails(universeIds) {
-  const endpoints = [
+  /* Wide 16:9 game thumbnails first (what large studios showcase), square icons as fallback. */
+  const wideEndpoints = [
+    `https://thumbnails.roproxy.com/v1/games/multiget/thumbnails?universeIds=${universeIds}&countPerUniverse=1&defaults=true&size=768x432&format=Png&isCircular=false`,
+    `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${universeIds}&countPerUniverse=1&defaults=true&size=768x432&format=Png&isCircular=false`
+  ];
+
+  for (const endpoint of wideEndpoints) {
+    try {
+      const data = await fetchJson(endpoint);
+      const map = new Map();
+
+      (data?.data || []).forEach((entry) => {
+        const url = entry?.thumbnails?.[0]?.imageUrl;
+        if (url) map.set(String(entry.universeId), url);
+      });
+
+      if (map.size) return map;
+    } catch (error) {
+      console.warn("Wide thumbnail endpoint failed:", error);
+    }
+  }
+
+  const iconEndpoints = [
     `https://thumbnails.roproxy.com/v1/games/icons?universeIds=${universeIds}&size=512x512&format=Png&isCircular=false`,
     `https://thumbnails.roblox.com/v1/games/icons?universeIds=${universeIds}&size=512x512&format=Png&isCircular=false`
   ];
 
-  for (const endpoint of endpoints) {
+  for (const endpoint of iconEndpoints) {
     try {
-      return await fetchJson(endpoint);
+      const data = await fetchJson(endpoint);
+      return new Map(
+        (data?.data || [])
+          .filter((icon) => icon.imageUrl)
+          .map((icon) => [String(icon.targetId), icon.imageUrl])
+      );
     } catch (error) {
-      console.warn("Thumbnail endpoint failed:", error);
+      console.warn("Icon endpoint failed:", error);
     }
   }
 
-  return {
-    data: []
-  };
+  return new Map();
 }
 
 /* =========================================================
    GAME CARD
 ========================================================= */
 
-function buildGameCard(game, info, thumbnail, large = false) {
+function buildGameCard(game, info, thumbnail, options = {}) {
   const name = info?.name || game.fallbackName;
 
   const description =
     info?.description?.trim() ||
     "A Horizon Productions Roblox experience.";
 
+  const hasStats = Boolean(info);
   const visits = Number(info?.visits) || 0;
   const playing = Number(info?.playing) || 0;
-
-  const cardClass = large ? "portfolio-game" : "game-card";
+  const favorites = Number(info?.favoritedCount) || 0;
+  const genre = info?.genre && info.genre !== "All" ? info.genre : "Roblox Experience";
 
   const thumbnailHtml = thumbnail
-    ? `
-      <img
-        src="${escapeHtml(thumbnail)}"
-        alt="${escapeHtml(name)} thumbnail"
-        loading="lazy"
-      />
-    `
-    : `
-      <div class="game-fallback-image">
-        <span>${escapeHtml(name)}</span>
-      </div>
-    `;
+    ? `<img src="${escapeHtml(thumbnail)}" alt="${escapeHtml(name)} thumbnail" loading="lazy" />`
+    : `<div class="game-fallback-image"><span>${escapeHtml(name)}</span></div>`;
+
+  const badge = hasStats
+    ? `<span class="live-badge"><i></i>${formatNumber(playing)} playing</span>`
+    : "";
+
+  const flagship = options.flagship
+    ? `<span class="flagship-badge">Flagship</span>`
+    : "";
 
   return `
-    <article class="${cardClass}">
-
-      <div class="game-thumb">
-
+    <article class="portfolio-game${options.flagship ? " is-flagship" : ""}">
+      <a class="game-thumb" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer" tabindex="-1" aria-hidden="true">
         ${thumbnailHtml}
-
-        <span class="live-badge">
-          <i></i>
-          ${formatNumber(playing)} playing
-        </span>
-
-      </div>
+        ${flagship}
+        ${badge}
+      </a>
 
       <div class="game-copy">
+        <span class="game-kicker">${escapeHtml(genre)}</span>
+        <h3>${escapeHtml(name)}</h3>
+        <p>${escapeHtml(description)}</p>
 
-        <div class="game-copy-top">
+        ${hasStats ? `
+        <dl class="game-stats">
+          <div><dt>Visits</dt><dd>${formatNumber(visits)}</dd></div>
+          <div><dt>Online</dt><dd>${formatNumber(playing)}</dd></div>
+          <div><dt>Favorites</dt><dd>${formatNumber(favorites)}</dd></div>
+        </dl>` : ""}
 
-          <span class="game-kicker">
-            ROBLOX EXPERIENCE
-          </span>
-
-          <h3>
-            ${escapeHtml(name)}
-          </h3>
-
-        </div>
-
-        <p>
-          ${escapeHtml(description)}
-        </p>
-
-        <div class="game-stats">
-
-          <span>
-            ${formatNumber(visits)} visits
-          </span>
-
-          <span>
-            ${formatNumber(playing)} online
-          </span>
-
-        </div>
-
-        <a
-          class="game-view"
-          href="${escapeHtml(game.url)}"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>
-            View experience
-          </span>
-
-          <b>
-            ↗
-          </b>
+        <a class="game-view" href="${escapeHtml(game.url)}" target="_blank" rel="noopener noreferrer">
+          <span>Play on Roblox</span>
+          <b aria-hidden="true">↗</b>
         </a>
-
       </div>
-
     </article>
   `;
 }
 
 /* =========================================================
-   FALLBACK GAME RENDER
+   STAT COUNTERS
 ========================================================= */
 
-function renderFallbackGames(container, large = false) {
-  if (!container) return;
+function setStat(key, value, animate = true) {
+  document.querySelectorAll(`[data-stat="${key}"]`).forEach((element) => {
+    if (typeof value !== "number") {
+      element.textContent = value;
+      return;
+    }
 
-  container.innerHTML = GAMES.map((game) => {
-    return buildGameCard(
-      game,
-      null,
-      null,
-      large
-    );
-  }).join("");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!animate || reduce || value < 10) {
+      element.textContent = formatNumber(value);
+      return;
+    }
+
+    const duration = 1100;
+    const startTime = performance.now();
+
+    const tick = (now) => {
+      const progress = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      element.textContent = formatNumber(Math.round(value * eased));
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  });
 }
 
 /* =========================================================
@@ -425,182 +444,112 @@ function renderFallbackGames(container, large = false) {
 ========================================================= */
 
 async function loadGamesData() {
-  const featuredGrid =
-    document.getElementById("featuredGameGrid");
+  const featuredGrid = document.getElementById("featuredGameGrid");
+  const gamesPageGrid = document.getElementById("gamesPageGrid");
+  const hasStats = document.querySelector("[data-stat]");
 
-  const gamesPageGrid =
-    document.getElementById("gamesPageGrid");
+  if (!featuredGrid && !gamesPageGrid && !hasStats) return;
 
-  if (!featuredGrid && !gamesPageGrid) {
-    return;
-  }
+  setStat("titles", GAMES.length, false);
+
+  const renderFallback = () => {
+    const cards = GAMES.map((game) => buildGameCard(game, null, null));
+    if (featuredGrid) featuredGrid.innerHTML = cards.slice(0, 3).join("");
+    if (gamesPageGrid) {
+      gamesPageGrid.innerHTML = GAMES
+        .map((game, index) => buildGameCard(game, null, null, { flagship: index === 0 }))
+        .join("");
+    }
+    setStat("visits", "—");
+    setStat("playing", "—");
+  };
 
   try {
-    const resolvedGames = await Promise.all(
-      GAMES.map((game) =>
-        resolveUniverse(game)
-      )
-    );
-
-    const validGames = resolvedGames.filter(
-      (game) => game.universeId !== null
-    );
+    const resolvedGames = await Promise.all(GAMES.map(resolveUniverse));
+    const validGames = resolvedGames.filter((game) => game.universeId !== null);
 
     if (!validGames.length) {
-      throw new Error(
-        "No valid Roblox universe IDs were resolved."
-      );
+      throw new Error("No valid Roblox universe IDs were resolved.");
     }
 
-    const universeIds = validGames
-      .map((game) => game.universeId)
-      .join(",");
+    const universeIds = validGames.map((game) => game.universeId).join(",");
 
-    const [
-      gameData,
-      thumbnailData
-    ] = await Promise.all([
+    const [gameData, thumbnailMap] = await Promise.all([
       fetchGameInfo(universeIds),
       fetchGameThumbnails(universeIds)
     ]);
 
     const gameMap = new Map(
-      (gameData?.data || []).map((game) => [
-        String(game.id),
-        game
-      ])
+      (gameData?.data || []).map((game) => [String(game.id), game])
     );
 
-    const thumbnailMap = new Map(
-      (thumbnailData?.data || []).map((thumbnail) => [
-        String(thumbnail.targetId),
-        thumbnail.imageUrl
-      ])
-    );
-
-    const normalCards = [];
-    const largeCards = [];
-
-    let totalVisits = 0;
-    let totalPlaying = 0;
-
-    resolvedGames.forEach((game) => {
-      const universeId =
-        game.universeId
-          ? String(game.universeId)
-          : null;
-
-      const info =
-        universeId
-          ? gameMap.get(universeId)
-          : null;
-
-      const thumbnail =
-        universeId
-          ? thumbnailMap.get(universeId)
-          : null;
-
-      totalVisits +=
-        Number(info?.visits) || 0;
-
-      totalPlaying +=
-        Number(info?.playing) || 0;
-
-      normalCards.push(
-        buildGameCard(
-          game,
-          info,
-          thumbnail,
-          false
-        )
-      );
-
-      largeCards.push(
-        buildGameCard(
-          game,
-          info,
-          thumbnail,
-          true
-        )
-      );
+    const entries = resolvedGames.map((game) => {
+      const id = game.universeId ? String(game.universeId) : null;
+      return {
+        game,
+        info: id ? gameMap.get(id) || null : null,
+        thumbnail: id ? thumbnailMap.get(id) || null : null
+      };
     });
 
-    if (featuredGrid) {
-      featuredGrid.innerHTML =
-        normalCards.join("");
-    }
+    const totalVisits = entries.reduce((sum, e) => sum + (Number(e.info?.visits) || 0), 0);
+    const totalPlaying = entries.reduce((sum, e) => sum + (Number(e.info?.playing) || 0), 0);
+
+    /* Portfolio: biggest titles first. */
+    const byVisits = [...entries].sort(
+      (a, b) => (Number(b.info?.visits) || 0) - (Number(a.info?.visits) || 0)
+    );
+
+    /* Home page: what's hot right now. */
+    const byPlaying = [...entries].sort(
+      (a, b) => (Number(b.info?.playing) || 0) - (Number(a.info?.playing) || 0)
+    );
 
     if (gamesPageGrid) {
-      gamesPageGrid.innerHTML =
-        largeCards.join("");
+      gamesPageGrid.innerHTML = byVisits
+        .map((e, index) => buildGameCard(e.game, e.info, e.thumbnail, { flagship: index === 0 }))
+        .join("");
     }
 
-    const gamesTracked =
-      document.getElementById("gamesTracked");
-
-    const portfolioVisits =
-      document.getElementById("portfolioVisits");
-
-    const portfolioPlaying =
-      document.getElementById("portfolioPlaying");
-
-    if (gamesTracked) {
-      gamesTracked.textContent =
-        String(GAMES.length);
+    if (featuredGrid) {
+      featuredGrid.innerHTML = byPlaying
+        .slice(0, 3)
+        .map((e) => buildGameCard(e.game, e.info, e.thumbnail))
+        .join("");
     }
 
-    if (portfolioVisits) {
-      portfolioVisits.textContent =
-        formatNumber(totalVisits);
-    }
-
-    if (portfolioPlaying) {
-      portfolioPlaying.textContent =
-        formatNumber(totalPlaying);
-    }
+    setStat("visits", totalVisits);
+    setStat("playing", totalPlaying);
   } catch (error) {
-    console.warn(
-      "Roblox portfolio failed to load:",
-      error
-    );
-
-    renderFallbackGames(
-      featuredGrid,
-      false
-    );
-
-    renderFallbackGames(
-      gamesPageGrid,
-      true
-    );
-
-    const gamesTracked =
-      document.getElementById("gamesTracked");
-
-    const portfolioVisits =
-      document.getElementById("portfolioVisits");
-
-    const portfolioPlaying =
-      document.getElementById("portfolioPlaying");
-
-    if (gamesTracked) {
-      gamesTracked.textContent =
-        String(GAMES.length);
-    }
-
-    if (portfolioVisits) {
-      portfolioVisits.textContent =
-        "Unavailable";
-    }
-
-    if (portfolioPlaying) {
-      portfolioPlaying.textContent =
-        "Unavailable";
-    }
+    console.warn("Roblox portfolio failed to load:", error);
+    renderFallback();
   }
 }
 
 loadGamesData();
+
+/* =========================================================
+   HOME — JOB PREVIEW
+========================================================= */
+
+const featuredJobs = document.getElementById("featuredJobs");
+
+if (featuredJobs) {
+  featuredJobs.innerHTML = JOBS.slice(0, 4)
+    .map(
+      (job) => `
+        <a class="job-preview" href="/jobs?role=${encodeURIComponent(job.id)}">
+          <div>
+            <h3>${escapeHtml(job.title)}</h3>
+            <p>${escapeHtml(job.department)} · ${escapeHtml(job.location)}</p>
+          </div>
+          <span class="job-pill">${escapeHtml(job.type)}</span>
+          <span class="job-preview-cta">Apply <b aria-hidden="true">↗</b></span>
+        </a>
+      `
+    )
+    .join("");
+}
 
 /* =========================================================
    JOB FILTERING

@@ -9,6 +9,9 @@
 
   <link rel="icon" type="image/png" href="Assets/favicon.png" />
   <link rel="apple-touch-icon" href="Assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -33,7 +36,6 @@
       <a href="/games">Games</a>
       <a href="/team">Team</a>
       <a href="/jobs">Jobs</a>
-      <a href="/team">Leadership</a>
       <a href="/contact">Contact</a>
     </nav>
 
@@ -100,16 +102,16 @@
 
         <div class="hero-meta" aria-label="Studio highlights">
           <div>
-            <strong>Roblox</strong>
-            <span>Primary platform</span>
+            <strong data-stat="titles">5</strong>
+            <span>Live titles</span>
           </div>
           <div>
-            <strong>Remote</strong>
-            <span>Distributed production</span>
+            <strong data-stat="visits">—</strong>
+            <span>Lifetime visits</span>
           </div>
           <div>
-            <strong>Growing</strong>
-            <span>Hiring selectively</span>
+            <strong data-stat="playing">—</strong>
+            <span>Playing right now</span>
           </div>
         </div>
       </div>
@@ -139,6 +141,22 @@
             <span class="signal">LIVE</span>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="featured-games shell">
+      <div class="section-head reveal">
+        <div>
+          <p class="section-label">Our Games</p>
+          <h2>Played by millions on Roblox.</h2>
+        </div>
+        <a class="text-link" href="/games">View full portfolio <span>↗</span></a>
+      </div>
+
+      <div class="featured-game-grid" id="featuredGameGrid">
+        <article class="portfolio-game game-loading"></article>
+        <article class="portfolio-game game-loading"></article>
+        <article class="portfolio-game game-loading"></article>
       </div>
     </section>
 
